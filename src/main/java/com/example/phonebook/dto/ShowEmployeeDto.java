@@ -1,53 +1,25 @@
-package com.example.phonebook.models.entities;
+package com.example.phonebook.dto;
 
-import jakarta.persistence.*;
+import com.example.phonebook.models.enums.DepartmentType;
 
-import java.util.Objects;
-
-@Entity
-@Table(
-        name = "employee",
-        indexes = {
-                @Index(name = "idx_employee_last_name", columnList = "last_name"),
-                @Index(name = "idx_employee_first_name", columnList = "first_name"),
-                @Index(name = "idx_employee_department_id", columnList = "department_id"),
-                @Index(name = "idx_employee_fullname", columnList = "last_name, first_name, middle_name")
-        }
-)
-public class Employee {
-
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
-
-    @Column(name = "first_name", nullable = false)
+public class ShowEmployeeDto {
     private String firstName;
-
-    @Column(name = "middle_name")
+    private String lastName;
     private String middleName;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id", nullable = false)
-    private Department department;
-
-    @Column(name = "office_number")
+    private DepartmentType departmentType;
     private String officeNumber;
-
-    @Column(name = "work_phone", nullable = false, unique = true)
     private String workPhone;
-
-    @Column(name = "personal_phone")
     private String personalPhone;
-
-    @Column(name = "email_address", nullable = false, unique = true)
     private String email;
-
-    @Column(name = "status_note")
     private String statusNote;
-
-    @Column(name = "additional_info", columnDefinition = "TEXT")
     private String additionalInfo;
 
-    public Employee() {
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getLastName() {
@@ -58,14 +30,6 @@ public class Employee {
         this.lastName = lastName;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getMiddleName() {
         return middleName;
     }
@@ -74,12 +38,12 @@ public class Employee {
         this.middleName = middleName;
     }
 
-    public Department getDepartment() {
-        return department;
+    public DepartmentType getDepartmentType() {
+        return departmentType;
     }
 
-    public void setDepartment(Department department) {
-        this.department = department;
+    public void setDepartmentType(DepartmentType departmentType) {
+        this.departmentType = departmentType;
     }
 
     public String getOfficeNumber() {
