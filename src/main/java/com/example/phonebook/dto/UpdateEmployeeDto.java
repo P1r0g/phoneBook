@@ -1,14 +1,12 @@
 package com.example.phonebook.dto;
 
 import com.example.phonebook.models.entities.Department;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-import java.time.LocalDate;
-
-public class AddEmployeeDto {
-    private String firstName;
-    private String lastName;
-    private String middleName;
+public class UpdateEmployeeDto {
     private Department department;
     private String officeNumber;
     private String workPhone;
@@ -16,34 +14,6 @@ public class AddEmployeeDto {
     private String email;
     private String statusNote;
     private String additionalInfo;
-
-
-    @NotEmpty(message = "Имя не должно быть пустым!")
-    @Size(min = 2, message = "Имя должно содержать не менее 2 символов!")
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-    @NotEmpty(message = "Фамилия не должна быть пустой!")
-    @Size(min = 2, message = "Фамилия должна содержать не менее 2 символов!")
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-    @Size(min = 2, message = "Отчество должно содержать не менее 2 символов!")
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
 
     @NotNull(message = "Выберите подразделение!")
     public Department getDepartment() {

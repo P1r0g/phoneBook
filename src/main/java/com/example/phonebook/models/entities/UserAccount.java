@@ -3,14 +3,11 @@ package com.example.phonebook.models.entities;
 import com.example.phonebook.models.enums.UserRole;
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "user_account")
 public class UserAccount {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(nullable = false, unique = true, length = 100)
     private String username;
 
@@ -23,18 +20,9 @@ public class UserAccount {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
-    private Department department; // для модераторского доступа
+    private Department department;
 
     public UserAccount() {
-    }
-
-    // Getters / Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -68,18 +56,4 @@ public class UserAccount {
     public void setDepartment(Department department) {
         this.department = department;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UserAccount)) return false;
-        UserAccount other = (UserAccount) o;
-        return id != null && id.equals(other.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return 31;
-    }
 }
-
