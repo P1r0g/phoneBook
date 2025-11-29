@@ -15,6 +15,9 @@ import java.util.Objects;
         }
 )
 public class Employee {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "last_name", nullable = false)
     private String lastName;
