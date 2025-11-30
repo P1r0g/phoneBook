@@ -1,15 +1,12 @@
 package com.example.phonebook.dto;
 
-import com.example.phonebook.models.entities.Department;
-import jakarta.validation.constraints.*;
+import com.example.phonebook.models.enums.DepartmentType;
 
-import java.time.LocalDate;
-
-public class AddEmployeeDto {
+public class ShowEmployeeDto {
     private String firstName;
     private String lastName;
     private String middleName;
-    private Department department;
+    private DepartmentType departmentType;
     private String officeNumber;
     private String workPhone;
     private String personalPhone;
@@ -17,9 +14,6 @@ public class AddEmployeeDto {
     private String statusNote;
     private String additionalInfo;
 
-
-    @NotEmpty(message = "Имя не должно быть пустым!")
-    @Size(min = 2, message = "Имя должно содержать не менее 2 символов!")
     public String getFirstName() {
         return firstName;
     }
@@ -27,8 +21,7 @@ public class AddEmployeeDto {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-    @NotEmpty(message = "Фамилия не должна быть пустой!")
-    @Size(min = 2, message = "Фамилия должна содержать не менее 2 символов!")
+
     public String getLastName() {
         return lastName;
     }
@@ -36,7 +29,7 @@ public class AddEmployeeDto {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    @Size(min = 2, message = "Отчество должно содержать не менее 2 символов!")
+
     public String getMiddleName() {
         return middleName;
     }
@@ -45,16 +38,14 @@ public class AddEmployeeDto {
         this.middleName = middleName;
     }
 
-    @NotNull(message = "Выберите подразделение!")
-    public Department getDepartment() {
-        return department;
+    public DepartmentType getDepartmentType() {
+        return departmentType;
     }
 
-    public void setDepartment(Department department) {
-        this.department = department;
+    public void setDepartmentType(DepartmentType departmentType) {
+        this.departmentType = departmentType;
     }
-    @NotEmpty(message = "Номер кабинета не может быть пустым")
-    @Size(min = 3, message = "Номер кабинета должен быть не менее 3 символов")
+
     public String getOfficeNumber() {
         return officeNumber;
     }
@@ -62,7 +53,7 @@ public class AddEmployeeDto {
     public void setOfficeNumber(String officeNumber) {
         this.officeNumber = officeNumber;
     }
-    @NotEmpty(message = "Рабочий телефон не должен быть пустым")
+
     public String getWorkPhone() {
         return workPhone;
     }
@@ -70,7 +61,7 @@ public class AddEmployeeDto {
     public void setWorkPhone(String workPhone) {
         this.workPhone = workPhone;
     }
-    @NotEmpty(message = "номер телефона не должен быть пустым")
+
     public String getPersonalPhone() {
         return personalPhone;
     }
@@ -78,7 +69,7 @@ public class AddEmployeeDto {
     public void setPersonalPhone(String personalPhone) {
         this.personalPhone = personalPhone;
     }
-    @Email
+
     public String getEmail() {
         return email;
     }
@@ -90,6 +81,7 @@ public class AddEmployeeDto {
     public String getStatusNote() {
         return statusNote;
     }
+
     public void setStatusNote(String statusNote) {
         this.statusNote = statusNote;
     }
@@ -97,6 +89,7 @@ public class AddEmployeeDto {
     public String getAdditionalInfo() {
         return additionalInfo;
     }
+
     public void setAdditionalInfo(String additionalInfo) {
         this.additionalInfo = additionalInfo;
     }

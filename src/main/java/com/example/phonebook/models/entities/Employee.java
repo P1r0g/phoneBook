@@ -2,6 +2,8 @@ package com.example.phonebook.models.entities;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(
         name = "employee",
@@ -13,7 +15,6 @@ import jakarta.persistence.*;
         }
 )
 public class Employee {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -50,14 +51,6 @@ public class Employee {
     private String additionalInfo;
 
     public Employee() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getLastName() {
@@ -139,18 +132,4 @@ public class Employee {
     public void setAdditionalInfo(String additionalInfo) {
         this.additionalInfo = additionalInfo;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Employee)) return false;
-        Employee other = (Employee) o;
-        return id != null && id.equals(other.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return 31;
-    }
 }
-
