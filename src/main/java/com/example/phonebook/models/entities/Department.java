@@ -29,6 +29,10 @@ public class Department {
         return fullName;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }

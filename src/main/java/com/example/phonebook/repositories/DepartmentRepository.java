@@ -1,20 +1,17 @@
 package com.example.phonebook.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.example.phonebook.models.entities.Department;
 
 @Repository
-public interface DepartmentRepository extends JpaRepository<Department, String> {
+public interface DepartmentRepository extends JpaRepository<Department, Long> {
     
     // Простой поиск по имени
-    Optional<Department> findByShortName(String name);
-
-    // Простой поиск по id
-    Optional<Department> findById(Long id);
+    List<Department> findByShortName(String name);
 
     // Проверка существования
     boolean existsByName(String name);

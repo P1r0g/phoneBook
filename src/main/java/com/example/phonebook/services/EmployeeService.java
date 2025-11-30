@@ -11,5 +11,7 @@ public interface EmployeeService {
 
     List<ShowEmployeeDto> allEmployees();
 
+    List<ShowEmployeeDto> searchEmployees(String searchTerm);
+
     void fireEmployee(String employeeFullName);
 }

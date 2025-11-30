@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.phonebook.dto.AddEmployeeDto;
 import com.example.phonebook.dto.ShowEmployeeDto;
+import com.example.phonebook.models.entities.Department;
 import com.example.phonebook.models.entities.Employee;
 import com.example.phonebook.repositories.DepartmentRepository;
 import com.example.phonebook.repositories.EmployeeRepository;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final DepartmentRepository departmentRepository;
+    private final ModelMapper mapper;
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository, DepartmentRepository departmentRepository, ModelMapper mapper) {
         this.employeeRepository = employeeRepository;
@@ -35,10 +37,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     @CacheEvict(cacheNames = "employees", allEntries = true)
     public void addEmployee(AddEmployeeDto employeeDto) {
-        log.debug("Добавление нового сотрудника: {} {} {}", employeeDto.getLastName(), employeeDto.getMiddleName(), employeeDto.getFirstName());
+        log.debug("Добавление нового сотрудника: {} {} {}", employeeDto.getLastName(), employeeDto.getFirstName(), employeeDto.getMiddleName());
 
+        Department department = departmentRepository.findById(employeeDto.getDepartment().getId()).orElse(null);
+        if (department == null) {
+            log.warn("Попытка добавить сотрудника в несуществующий отдел");
+            //throw new EmployeeNotFoundException("Сотрудник с именем '" + employeeFullName + "' не найден");
+        }
         Employee employee = mapper.map(employeeDto, Employee.class);
-        employee.setDepartment(departmentRepository.findById(employeeDto.getDepartment()).orElse(null));
+        employee.setDepartment(department);
 
         employeeRepository.saveAndFlush(employee);
         log.info("Сотрудник успешно добавлен: {} {} {}", employeeDto.getLastName(), employeeDto.getMiddleName(), employeeDto.getFirstName());
@@ -54,7 +61,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.debug("Найдено сотрудников: {}", employees.size());
         return employees;
         }
-    }
+
+
     @Override
     @Transactional
     @CacheEvict(cacheNames = "employees", allEntries = true)
@@ -69,5 +77,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employeeRepository.deleteEmployeeByFullName(employeeFullName);
         log.info("Сотрудник уволен: {}", employeeFullName);
+    }
+
+    @Override
+    public List<ShowEmployeeDto> searchEmployees(String searchTerm) {
+        log.debug("Поиск сотрудников по запросу: {}", searchTerm);
+        List<ShowEmployeeDto> results = employeeRepository.searchEmployees(searchTerm).stream()
+                .map(employee -> mapper.map(employee, ShowEmployeeDto.class))
+                .collect(Collectors.toList());
+        log.info("По запросу '{}' найдено сотрудников: {}", searchTerm, results.size());        
+        return results;
     }
 }   
