@@ -46,23 +46,5 @@ public class DepartmentServiceImpl implements DepartmentService {
         log.info("По запросу '{}' найдено отделов: {}", searchTerm, results.size());
         return results;
     }
-
-    @Override
-    public ShowDetailedDepartmentInfoDto departmentDetails(String department) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'departmentDetails'");
-    }
-    
-    @Override
-    @Cacheable(value = "company", key = "#companyName", unless = "#result == null")
-    public ShowDetailedDepartmentInfoDto departmentDetails(String departmentName) {
-        log.debug("Получение деталей кафедры: {}", departmentName);
-        Department department = departmentRepository.findByShortName(departmentName)
-                .orElseThrow(() -> {
-                    log.warn("Отдел не найден: {}", companyName);
-                    return new CompanyNotFoundException("Отдел с аббревиатурой '" + departmentName + "' не найден");
-                });
-        return mapper.map(department, ShowDetailedDepartmentInfoDto.class);
-    }
     
 }

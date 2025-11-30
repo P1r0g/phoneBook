@@ -8,6 +8,4 @@ public interface DepartmentService {
 
     List<ShowDepartmentInfoDto> searchDepartments(String searchTerm);
 
-    ShowDetailedDepartmentInfoDto departmentDetails(String department);
-    
 }

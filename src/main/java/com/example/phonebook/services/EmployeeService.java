@@ -1,5 +1,7 @@
 package com.example.phonebook.services;
 
+import java.util.List;
+
 import com.example.phonebook.dto.AddEmployeeDto;
 
 public interface EmployeeService {
@@ -8,7 +10,7 @@ public interface EmployeeService {
 
     List<ShowEmployeeInfoDto> allEmployees();
 
-    ShowDetailedEmployeeInfoDto employeeInfo(String employee);
+    ShowDetailedEmployeeInfoDto employeeInfo(String employeeFullName);
 
     void fireEmployee(String employeeFullName);
 }
