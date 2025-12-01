@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head"/>
+<body>
+<div th:replace="fragments/navbar"></div>
+<main class="container">
+    <hgroup>
+    <h1>Все сотрудники</h1>
+    <p>Просмотрите всех сотрудников ИУЦТ</p>
+    </hgroup>
+    <li><a href="/employees/add">Добавить сотрудника</a></li>
+    <div class="grid">
+        <div th:each="e : ${allEmployees}" class="card">
+            <h3 th:text="${e.lastName} + ' ' + ${e.firstName} + ${e.middleName}"></h3>
+            <p><strong>Рабочий телефон:</strong> <span th:text="${e.workPhone}"></span></p>
+            <p><strong>Личный телефон:</strong> <span th:text="${e.personalPhone}"></span></p>
+            <p><strong>Email:</strong> <span th:text="${e.email}"></span></p>
+            <p><strong>Кабинет:</strong> <span th:text="${e.officeNumber}"></span></p>
+            <p><strong>Дополнительная информация:</strong> <span th:text="${e.additionalInfo}"></span></p>
+            <p><strong>хз что:</strong> <span th:text="${e.statusNote}"></span></p>
+            <a th:href="@{'/employees/update/' + ${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}}">
+                Изменить
+            </a>
+
+        </div>
+    </div>
+    <p th:if="${#lists.isEmpty(allEmployees)}" class="text-center">
+        <em>Сотрудники не найдены. Добавьте новых сотрудников, чтобы начать!</em>
+    </p>
+</main>
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

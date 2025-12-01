@@ -2,8 +2,6 @@ package com.example.phonebook.models.entities;
 
 import jakarta.persistence.*;
 
-import java.util.Objects;
-
 @Entity
 @Table(
         name = "employee",

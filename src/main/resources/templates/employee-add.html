@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head"/>
+<body>
+<div th:replace="fragments/navbar"></div>
+<main class="container">
+    <article style="max-width: 700px; margin: 0 auto;">
+        <hgroup>
+            <h1>Добавление сотрудника</h1>
+            <p>Заполните информацию о сотруднике</p>
+        </hgroup>
+        <form th:action="@{'/employees/update/' + ${fullName}}"
+              th:method="post"
+              th:object="${employeeModel}">
+
+            <label for="department">
+                Подразделение
+                <select id="department" th:field="*{departmentId}" required>
+                    <option value="">Выберите подразделение...</option>
+                    <option th:each="d : ${departments}"
+                            th:value="${d.id}"
+                            th:text="${d.shortName}"></option>
+                </select>
+            </label>
+
+            <label for="officeNumber">Кабинет
+                <input th:field="*{officeNumber}" id="officeNumber" />
+            </label>
+
+            <label for="workPhone">Рабочий номер
+                <input th:field="*{workPhone}" id="workPhone" />
+            </label>
+
+            <label for="personalPhone">Номер телефона
+                <input th:field="*{personalPhone}" id="personalPhone" />
+            </label>
+
+            <label for="email">Email
+                <input th:field="*{email}" id="email" />
+            </label>
+
+            <label for="statusNote">Статус
+                <input th:field="*{statusNote}" id="statusNote" />
+            </label>
+
+            <label for="additionalInfo">Другая информация
+                <input th:field="*{additionalInfo}" id="additionalInfo" />
+            </label>
+
+            <button type="submit">Изменить сотрудника</button>
+
+        </form>
+
+    </article>
+</main>
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head"/>
+<body>
+<div th:replace="fragments/navbar"></div>
+<main class="container">
+    <article style="max-width: 700px; margin: 0 auto;">
+        <hgroup>
+            <h1>Изменение сотрудника</h1>
+        </hgroup>
+        <form th:action="@{/employees/update/ + }"
+              th:method="post"
+              th:object="${employeeModel}">
+
+            <label for="department">
+                Подразделение
+                <select id="department" th:field="*{departmentId}" required>
+                    <option value="">Выберите подразделение...</option>
+                    <option th:each="d : ${departments}"
+                            th:value="${d.id}"
+                            th:text="${d.shortName}"></option>
+                </select>
+                <small th:if="${#fields.hasErrors('departmentId')}" th:errors="*{departmentId}"
+                       class="text-danger"></small>
+            </label>
+
+            <div>
+                <label for="officeNumber">
+                    Кабинет
+                    <input th:field="*{officeNumber}"
+                           th:errorclass="is-invalid"
+                           type="text"
+                           id="officeNumber"
+                           placeholder="Введите кабинет"
+                           required/>
+                    <small th:if="${#fields.hasErrors('officeNumber')}" th:errors="*{officeNumber}"
+                           class="text-danger"></small>
+                </label>
+
+                <label for="workPhone">
+                    Рабочий номер
+                    <input th:field="*{workPhone}"
+                           th:errorclass="is-invalid"
+                           id="workPhone"
+                           required/>
+                    <small th:if="${#fields.hasErrors('workPhone')}" th:errors="*{workPhone}"
+                           class="text-danger"></small>
+                </label>
+
+                <label for="personalPhone">
+                    Номер телефона
+                    <input th:field="*{personalPhone}"
+                           th:errorclass="is-invalid"
+                           id="personalPhone"
+                           placeholder="Введите номер телефона"
+                           required/>
+                    <small th:if="${#fields.hasErrors('personalPhone')}" th:errors="*{personalPhone}"
+                           class="text-danger"></small>
+                </label>
+
+                <label for="email">
+                    Email
+                    <input th:field="*{email}"
+                           th:errorclass="is-invalid"
+                           id="email"
+                           placeholder="Введите Email"
+                           required/>
+                    <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></small>
+                </label>
+
+                <label for="statusNote">
+                    хз что
+                    <input th:field="*{statusNote}"
+                           th:errorclass="is-invalid"
+                           id="statusNote"
+                           placeholder="Введите что-то"
+                           required/>
+                    <small th:if="${#fields.hasErrors('statusNote')}" th:errors="*{statusNote}"
+                           class="text-danger"></small>
+                </label>
+
+                <label for="additionalInfo">
+                    Другие контакты
+                    <input th:field="*{additionalInfo}"
+                           th:errorclass="is-invalid"
+                           id="additionalInfo"
+                           placeholder="Введите другие контакты"
+                           required/>
+                    <small th:if="${#fields.hasErrors('additionalInfo')}" th:errors="*{additionalInfo}"
+                           class="text-danger"></small>
+                </label>
+            </div>
+
+            <button type="submit">Изменить сотрудника</button>
+        </form>
+    </article>
+</main>
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

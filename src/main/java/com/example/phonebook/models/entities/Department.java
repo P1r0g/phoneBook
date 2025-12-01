@@ -3,7 +3,6 @@ package com.example.phonebook.models.entities;
 import com.example.phonebook.models.enums.DepartmentType;
 import jakarta.persistence.*;
 
-import java.util.Objects;
 
 @Entity
 @Table(name = "department")
@@ -27,6 +26,10 @@ public class Department {
 
     public String getFullName() {
         return fullName;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public void setFullName(String fullName) {

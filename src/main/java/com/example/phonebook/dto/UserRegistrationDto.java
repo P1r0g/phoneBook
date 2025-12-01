@@ -10,7 +10,7 @@ public class UserRegistrationDto {
     private String password;
     private String confirmPassword;
     private UserRole role;
-    private Department department;
+    private Long departmentId;
 
     public UserRegistrationDto() {
     }
@@ -42,7 +42,6 @@ public class UserRegistrationDto {
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
     }
-    @NotEmpty(message = "Необходимо выбрать роль!")
     public UserRole getRole() {
         return role;
     }
@@ -50,12 +49,11 @@ public class UserRegistrationDto {
     public void setRole(UserRole role) {
         this.role = role;
     }
-    @NotEmpty(message = "Необходимо указать подразделение!")
-    public Department getDepartment() {
-        return department;
+    public Long getDepartmentId() {
+        return departmentId;
     }
 
-    public void setDepartment(Department department) {
-        this.department = department;
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
     }
 }
