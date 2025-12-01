@@ -22,7 +22,8 @@
                            id="firstName"
                            placeholder="Введите имя"
                            required/>
-                    <small th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="text-danger"></small>
+                    <small th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"
+                           class="text-danger"></small>
                 </label>
 
                 <label for="lastName">
@@ -42,144 +43,89 @@
                            th:errorclass="is-invalid"
                            type="text"
                            id="middleName"
-                           placeholder="Введите отчество(при наличии)"
+                           placeholder="Введите Отчество"
                            required/>
-                    <small th:if="${#fields.hasErrors('middleName')}" th:errors="*{middleName}" class="text-danger"></small>
+                    <small th:if="${#fields.hasErrors('middleName')}" th:errors="*{middleName}"
+                           class="text-danger"></small>
                 </label>
             </div>
-            <fieldset>
-                <legend>Кафедра/Отдел</legend>
-                <label>
-                    <input th:field="*{departmentId}"
-                           th:value="1"
-                           type="radio"
-                           name="departmentId"/>
-                    БАППиБТ
-                </label>
-                <label>
-                    <input th:field="*{departmentId}"
-                           th:value="2"
-                           type="radio"
-                           name="departmentId"/>
-                    ВССиИБ
-                </label>
-                <label>
-                    <input th:field="*{departmentId}"
-                           th:value="3"
-                           type="radio"
-                           name="departmentId"/>
-                    ЖДСТУ
-                </label>
-                <label>
-                    <input th:field="*{departmentId}"
-                           th:value="4"
-                           type="radio"
-                           name="departmentId"/>
-                    КЭТиТ
-                </label>
-                <label>
-                    <input th:field="*{departmentId}"
-                           th:value="5"
-                           type="radio"
-                           name="departmentId"/>
-                    ЛиУТС
-                </label>
-                <label>
-                    <input th:field="*{departmentId}"
-                           th:value="6"
-                           type="radio"
-                           name="departmentId"/>
-                    УТБиИС
-                </label>
-                <label>
-                    <input th:field="*{departmentId}"
-                           th:value="7"
-                           type="radio"
-                           name="departmentId"/>
-                    УЭРиБТ
-                </label>
-                <label>
-                    <input th:field="*{departmentId}"
-                           th:value="8"
-                           type="radio"
-                           name="departmentId"/>
-                    ХиИЭ
-                </label>
-                <label>
-                    <input th:field="*{departmentId}"
-                           th:value="9"
-                           type="radio"
-                           name="departmentId"/>
-                    ЦТУТП
-                </label>
-                <label>
-                    <input th:field="*{departmentId}"
-                           th:value="10"
-                           type="radio"
-                           name="departmentId"/>
-                    Учебный отдел
-                </label>
-                <label>
-                    <input th:field="*{departmentId}"
-                           th:value="11"
-                           type="radio"
-                           name="departmentId"/>
-                    Отдел информатизации
-                </label>
-                <label>
-                    <input th:field="*{departmentId}"
-                           th:value="12"
-                           type="radio"
-                           name="departmentId"/>
-                    Администрация
-                </label>
-                <small th:if="${#fields.hasErrors('educationLevel')}" th:errors="*{educationLevel}" class="text-danger"></small>
-            </fieldset>
 
-            <!-- <label for="department">
-                Отдел
-                <select id="department" th:field="*{companyName}" required>
-                    <option value="">Выберите компанию...</option>
-                    <option th:each="c : ${availableCompanies}"
-                            th:value="${c.name}"
-                            th:text="${c.name}"></option>
+            <label for="department">
+                Подразделение
+                <select id="department" th:field="*{departmentId}" required>
+                    <option value="">Выберите подразделение...</option>
+                    <option th:each="d : ${departments}"
+                            th:value="${d.id}"
+                            th:text="${d.shortName}"></option>
                 </select>
-                <small th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}" class="text-danger"></small>
-            </label> -->
-
-            <label for="jobTitle">
-                Должность
-                <input th:field="*{jobTitle}"
-                       th:errorclass="is-invalid"
-                       type="text"
-                       id="jobTitle"
-                       placeholder="Введите должность"
-                       required/>
-                <small th:if="${#fields.hasErrors('jobTitle')}" th:errors="*{jobTitle}" class="text-danger"></small>
+                <small th:if="${#fields.hasErrors('departmentId')}" th:errors="*{departmentId}"
+                       class="text-danger"></small>
             </label>
 
-            <div class="grid">
-                <label for="birthDate">
-                    Дата рождения
-                    <input th:field="*{birthDate}"
+            <div>
+                <label for="officeNumber">
+                    Кабинет
+                    <input th:field="*{officeNumber}"
                            th:errorclass="is-invalid"
-                           type="date"
-                           id="birthDate"
+                           type="text"
+                           id="officeNumber"
+                           placeholder="Введите кабинет"
                            required/>
-                    <small th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}" class="text-danger"></small>
+                    <small th:if="${#fields.hasErrors('officeNumber')}" th:errors="*{officeNumber}"
+                           class="text-danger"></small>
                 </label>
 
-                <label for="salary">
-                    Зарплата
-                    <input th:field="*{salary}"
+                <label for="workPhone">
+                    Рабочий номер
+                    <input th:field="*{workPhone}"
                            th:errorclass="is-invalid"
-                           type="number"
-                           step="0.01"
-                           min="0"
-                           id="salary"
-                           placeholder="Введите зарплату"
+                           id="workPhone"
                            required/>
-                    <small th:if="${#fields.hasErrors('salary')}" th:errors="*{salary}" class="text-danger"></small>
+                    <small th:if="${#fields.hasErrors('workPhone')}" th:errors="*{workPhone}"
+                           class="text-danger"></small>
+                </label>
+
+                <label for="personalPhone">
+                    Номер телефона
+                    <input th:field="*{personalPhone}"
+                           th:errorclass="is-invalid"
+                           id="personalPhone"
+                           placeholder="Введите номер телефона"
+                           required/>
+                    <small th:if="${#fields.hasErrors('personalPhone')}" th:errors="*{personalPhone}"
+                           class="text-danger"></small>
+                </label>
+
+                <label for="email">
+                    Email
+                    <input th:field="*{email}"
+                           th:errorclass="is-invalid"
+                           id="email"
+                           placeholder="Введите Email"
+                           required/>
+                    <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></small>
+                </label>
+
+                <label for="statusNote">
+                    хз что
+                    <input th:field="*{statusNote}"
+                           th:errorclass="is-invalid"
+                           id="statusNote"
+                           placeholder="Введите что-то"
+                           required/>
+                    <small th:if="${#fields.hasErrors('statusNote')}" th:errors="*{statusNote}"
+                           class="text-danger"></small>
+                </label>
+
+                <label for="additionalInfo">
+                    Другие контакты
+                    <input th:field="*{additionalInfo}"
+                           th:errorclass="is-invalid"
+                           id="additionalInfo"
+                           placeholder="Введите другие контакты"
+                           required/>
+                    <small th:if="${#fields.hasErrors('additionalInfo')}" th:errors="*{additionalInfo}"
+                           class="text-danger"></small>
                 </label>
             </div>
 
