@@ -5,37 +5,67 @@
 <div th:replace="fragments/navbar"></div>
 <main class="container">
     <hgroup>
-    <h1>Все сотрудники</h1>
-    <p>Просмотрите всех сотрудников ИУЦТ</p>
+        <h1>Все сотрудники</h1>
+        <p>Просмотрите всех сотрудников ИУЦТ</p>
     </hgroup>
-    <li><a href="/employees/add">Добавить сотрудника</a></li>
+    
+    <div sec:authorize="hasRole('ADMIN')">
+        <button onclick="window.location.href='/employees/add'" class="button">Добавить сотрудника</button>
+    </div>
+    
     <form method="get" action="/employees/all">
         <div class="grid">
             <input type="search" 
                    name="search" 
                    th:value="${search}"
                    placeholder="Поиск сотрудников..." 
-                   aria-label="Поиск">
-            <button type="submit">Найти</button>
+                   aria-label="Поиск"
+                   onchange="this.form.submit()"
+                   oninput="this.form.dispatchEvent(new Event('submit', {bubbles: true}))">
         </div>
     </form>
-    <div th:each="e : ${allEmployees}" class="card">
-        <h3 th:text="${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}"></h3>
-        <h5 th:text="${e.departmentShortName}"></h5>
-        <p th:if="${e.workPhone}"><strong>Рабочий телефон:</strong> <a th:href="'tel:' + ${#strings.replace(e.workPhone, ' ', '')}" th:text="${e.workPhone}"></a></p>
-        <p th:if="${e.personalPhone}"><strong>Личный телефон:</strong> <a th:href="'tel:' + ${#strings.replace(e.personalPhone, ' ', '')}" th:text="${e.personalPhone}"></a></p>
-        <p th:if="${e.email}"><strong>Email:</strong> <a th:href="'mailto:' + ${e.email}" th:text="${e.email}"></a></p>
-        <p><strong>Кабинет:</strong> <span th:text="${e.officeNumber}"></span></p>
-        <p th:if="${e.additionalInfo}"><strong>Telegram:</strong> <a th:href="'https://t.me/' + ${e.additionalInfo}" th:text="'@' + ${e.additionalInfo}"></a></p>
-        <p th:if="${e.statusNote}"><strong>Дополнительная информация:</strong> <span th:text="${e.statusNoteg}"></span></p>
-        <a th:href="@{'/employees/update/' + ${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}}">
-                Изменить
-            </a>
+    
+    <!-- Добавляем стиль прямо здесь -->
+    <div style="
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-top: 20px;
+    ">
+        <div th:each="e : ${allEmployees}" class="card" style="margin-bottom: 0;">
+            <h3>
+                <span th:text="${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}"></span>
+                <span sec:authorize="hasRole('ADMIN')" style="margin-left: 10px;">
+                    <a th:href="@{'/employees/update/' + ${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}}">
+                        Изменить
+                    </a>
+                </span>
+            </h3>
+            <h5 th:text="${e.departmentShortName}"></h5>
+            <p th:if="${e.workPhone}"><strong>Рабочий телефон:</strong> <a th:href="'tel:' + ${#strings.replace(e.workPhone, ' ', '')}" th:text="${e.workPhone}"></a></p>
+            <p th:if="${e.personalPhone}"><strong>Личный телефон:</strong> <a th:href="'tel:' + ${#strings.replace(e.personalPhone, ' ', '')}" th:text="${e.personalPhone}"></a></p>
+            <p th:if="${e.email}"><strong>Email:</strong> <a th:href="'mailto:' + ${e.email}" th:text="${e.email}"></a></p>
+            <p><strong>Кабинет:</strong> <span th:text="${e.officeNumber}"></span></p>
+            <p th:if="${e.additionalInfo}"><strong>Telegram:</strong> <a th:href="'https://t.me/' + ${e.additionalInfo}" th:text="'@' + ${e.additionalInfo}"></a></p>
+            <p th:if="${e.statusNote}"><strong>Дополнительная информация:</strong> <span th:text="${e.statusNote}"></span></p>
+        </div>
     </div>
+    
     <p th:if="${#lists.isEmpty(allEmployees)}" class="text-center">
         <em>Сотрудники не найдены. Добавьте новых сотрудников, чтобы начать!</em>
     </p>
 </main>
+
+<script>
+    let searchTimeout;
+    document.querySelector('input[name="search"]').addEventListener('input', function(e) {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            this.form.submit();
+        }, 1000);
+    });
+</script>
+
 <footer th:replace="fragments/footer"></footer>
 </body>
 </html>
