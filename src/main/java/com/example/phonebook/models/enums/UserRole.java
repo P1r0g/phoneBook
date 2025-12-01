@@ -1,7 +1,7 @@
 package com.example.phonebook.models.enums;
 
 public enum UserRole {
-    USER(1), ADMIN(2), MODERATOR(3);
+    USER(1), MODERATOR(2), ADMIN(3);
 
     private int value;
 

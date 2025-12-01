@@ -1,73 +1,50 @@
 package com.example.phonebook.dto;
 
-import com.example.phonebook.models.entities.Department;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class UpdateEmployeeDto {
-    private Department department;
+
+    @NotNull(message = "Выберите подразделение!")
+    private Long departmentId;
+
+    @NotEmpty(message = "Номер кабинета не может быть пустым")
+    @Size(min = 3, message = "Кабинет — минимум 3 символа")
     private String officeNumber;
+
+    @NotEmpty(message = "Рабочий телефон обязателен")
     private String workPhone;
+
+    @NotEmpty(message = "Личный телефон обязателен")
     private String personalPhone;
+
+    @Email(message = "Некорректный email")
     private String email;
+
     private String statusNote;
     private String additionalInfo;
 
-    @NotNull(message = "Выберите подразделение!")
-    public Department getDepartment() {
-        return department;
-    }
+    // getters / setters
+    public Long getDepartmentId() { return departmentId; }
+    public void setDepartmentId(Long departmentId) { this.departmentId = departmentId; }
 
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-    @NotEmpty(message = "Номер кабинета не может быть пустым")
-    @Size(min = 3, message = "Номер кабинета должен быть не менее 3 символов")
-    public String getOfficeNumber() {
-        return officeNumber;
-    }
+    public String getOfficeNumber() { return officeNumber; }
+    public void setOfficeNumber(String officeNumber) { this.officeNumber = officeNumber; }
 
-    public void setOfficeNumber(String officeNumber) {
-        this.officeNumber = officeNumber;
-    }
-    @NotEmpty(message = "Рабочий телефон не должен быть пустым")
-    public String getWorkPhone() {
-        return workPhone;
-    }
+    public String getWorkPhone() { return workPhone; }
+    public void setWorkPhone(String workPhone) { this.workPhone = workPhone; }
 
-    public void setWorkPhone(String workPhone) {
-        this.workPhone = workPhone;
-    }
-    @NotEmpty(message = "номер телефона не должен быть пустым")
-    public String getPersonalPhone() {
-        return personalPhone;
-    }
+    public String getPersonalPhone() { return personalPhone; }
+    public void setPersonalPhone(String personalPhone) { this.personalPhone = personalPhone; }
 
-    public void setPersonalPhone(String personalPhone) {
-        this.personalPhone = personalPhone;
-    }
-    @Email
-    public String getEmail() {
-        return email;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getStatusNote() { return statusNote; }
+    public void setStatusNote(String statusNote) { this.statusNote = statusNote; }
 
-    public String getStatusNote() {
-        return statusNote;
-    }
-    public void setStatusNote(String statusNote) {
-        this.statusNote = statusNote;
-    }
-
-    public String getAdditionalInfo() {
-        return additionalInfo;
-    }
-    public void setAdditionalInfo(String additionalInfo) {
-        this.additionalInfo = additionalInfo;
-    }
+    public String getAdditionalInfo() { return additionalInfo; }
+    public void setAdditionalInfo(String additionalInfo) { this.additionalInfo = additionalInfo; }
 }

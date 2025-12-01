@@ -1,62 +1,64 @@
 package com.example.phonebook.config;
 
-import com.example.phonebook.models.enums.UserRole;
-import com.example.phonebook.repositories.UserRepository;
-import com.example.phonebook.services.AppUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.DelegatingSecurityContextRepository;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 
-
 @Slf4j
 @Configuration
 public class AppSecurityConfiguration {
-    
-    private final UserRepository userRepository;
 
-    public AppSecurityConfiguration(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public AppSecurityConfiguration() {
         log.info("AppSecurityConfiguration инициализирована");
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, SecurityContextRepository securityContextRepository) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   SecurityContextRepository securityContextRepository) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
+                        // Статические ресурсы доступны всем
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/favicon.ico", "/error").permitAll()
+
+                        // Публичные страницы
                         .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
-                        .requestMatchers("/actuator/**").permitAll() // Для демо; в production настроить безопасность
+                        .requestMatchers("/actuator/").permitAll()
+
+                        // Защищенные страницы
                         .requestMatchers("/users/profile").authenticated()
+
+                        // Доступ только для модераторов и админов
                         .requestMatchers("/employees/add", "/employees/employee-delete/*")
                         .hasAnyAuthority("ROLE_MODERATOR", "ROLE_ADMIN")
+
+                        // Доступ только для админов
                         .requestMatchers("/companies/add", "/companies/company-delete/*")
                         .hasAuthority("ROLE_ADMIN")
+
+                        // Все остальные запросы требуют аутентификации
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/users/login")
-                        .usernameParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY)
-                        .passwordParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY)
-                        .defaultSuccessUrl("/", true)
-                        .failureForwardUrl("/users/login-error")
+                        .usernameParameter("username")  // Имя параметра из формы
+                        .passwordParameter("password")   // Имя параметра из формы
+                        .defaultSuccessUrl("/", true)    // После успешного входа
+                        .failureUrl("/users/login?error=true")  // При ошибке
                         .permitAll()
                 )
                 .rememberMe(remember -> remember
-                        .key("uniqueAndSecret") // В production использовать секрет из конфигурации
+                        .key("uniqueAndSecret")
                         .tokenValiditySeconds(86400 * 7) // 7 дней
-                        .userDetailsService(userDetailsService())
                         .rememberMeParameter("remember-me")
                 )
                 .logout(logout -> logout
@@ -70,7 +72,7 @@ public class AppSecurityConfiguration {
                         .securityContextRepository(securityContextRepository)
                 )
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/actuator/**") // Для демо
+                        .ignoringRequestMatchers("/actuator/")
                 );
 
         log.info("SecurityFilterChain настроен");
@@ -88,10 +90,5 @@ public class AppSecurityConfiguration {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() { 
-        return new AppUserDetailsService(userRepository);
     }
 }

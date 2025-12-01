@@ -1,10 +1,12 @@
 package com.example.phonebook.controllers;
 
-import com.example.phonebook.services.DepartmentService;
-import lombok.extern.slf4j.Slf4j;
 import com.example.phonebook.dto.AddEmployeeDto;
+import com.example.phonebook.dto.UpdateEmployeeDto;
+import com.example.phonebook.models.entities.Employee;
+import com.example.phonebook.services.DepartmentService;
 import com.example.phonebook.services.EmployeeService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/employees")
 public class EmployeeController {
+
     private final EmployeeService employeeService;
     private final DepartmentService departmentService;
 
@@ -24,52 +27,112 @@ public class EmployeeController {
         log.info("EmployeeController инициализирован");
     }
 
+    // -------------------------------------------
+    //                ADD EMPLOYEE
+    // -------------------------------------------
+
     @GetMapping("/add")
-    public String addEmployee(Model model) {
-        log.debug("Отображение формы добавления сотрудника");
+    public String addEmployeeForm(Model model) {
+        if (!model.containsAttribute("employeeModel")) {
+            model.addAttribute("employeeModel", new AddEmployeeDto());
+        }
+
         model.addAttribute("departments", departmentService.allDepartments());
-        log.info("departments {}", departmentService.allDepartments().toString());
         return "employee-add";
     }
 
-    @ModelAttribute("employeeModel")
-    public AddEmployeeDto initEmployee() {
-        return new AddEmployeeDto();
-    }
-
     @PostMapping("/add")
-    public String addEmployee(@Valid AddEmployeeDto employeeModel, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        log.debug("Обработка добавления сотрудника: {} {}", employeeModel.getFirstName(), employeeModel.getLastName());
-
+    public String addEmployee(
+            @Valid @ModelAttribute("employeeModel") AddEmployeeDto employeeModel,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes
+    ) {
         if (bindingResult.hasErrors()) {
-            log.warn("Ошибки валидации при добавлении сотрудника: {}", bindingResult.getAllErrors());
             redirectAttributes.addFlashAttribute("employeeModel", employeeModel);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.employeeModel",
-                    bindingResult);
+            redirectAttributes.addFlashAttribute(
+                    "org.springframework.validation.BindingResult.employeeModel",
+                    bindingResult
+            );
             return "redirect:/employees/add";
         }
-        employeeService.addEmployee(employeeModel);
-        log.info("Сотрудник успешно добавлен через контроллер");
 
-        return "redirect:/";
+        employeeService.addEmployee(employeeModel);
+        return "redirect:/employees/all";
     }
+
+    // -------------------------------------------
+    //             SHOW ALL EMPLOYEES
+    // -------------------------------------------
 
     @GetMapping("/all")
     public String showAllEmployees(Model model) {
-        log.debug("Отображение списка всех сотрудников");
         model.addAttribute("allEmployees", employeeService.allEmployees());
-
         return "employee-all";
     }
 
+    // -------------------------------------------
+    //              DELETE EMPLOYEE
+    // -------------------------------------------
 
     @DeleteMapping("/employee-delete/{employee-full-name}")
     public String fireEmployee(@PathVariable("employee-full-name") String employeeFullName) {
-        log.debug("Увольнение сотрудника через контроллер: {}", employeeFullName);
         employeeService.fireEmployee(employeeFullName);
-        log.info("Сотрудник уволен через контроллер: {}", employeeFullName);
+        return "redirect:/employees/all";
+    }
+
+    // -------------------------------------------
+    //             UPDATE EMPLOYEE (FORM)
+    // -------------------------------------------
+
+    @GetMapping("/update/{fullName}")
+    public String showUpdateForm(
+            @PathVariable String fullName,
+            Model model
+    ) {
+        Employee employee = employeeService.findByFullName(fullName);
+
+        if (employee == null) {
+            return "redirect:/employees/all";
+        }
+
+        UpdateEmployeeDto dto = new UpdateEmployeeDto();
+        dto.setDepartmentId(employee.getDepartment().getId());
+        dto.setOfficeNumber(employee.getOfficeNumber());
+        dto.setWorkPhone(employee.getWorkPhone());
+        dto.setPersonalPhone(employee.getPersonalPhone());
+        dto.setEmail(employee.getEmail());
+        dto.setStatusNote(employee.getStatusNote());
+        dto.setAdditionalInfo(employee.getAdditionalInfo());
+
+        model.addAttribute("employeeModel", dto);
+        model.addAttribute("departments", departmentService.allDepartments());
+        model.addAttribute("fullName", fullName);
+
+        return "employee-update";
+    }
+
+    // -------------------------------------------
+    //           UPDATE EMPLOYEE (SUBMIT)
+    // -------------------------------------------
+
+    @PostMapping("/update/{fullName}")
+    public String updateEmployee(
+            @PathVariable String fullName,
+            @Valid @ModelAttribute("employeeModel") UpdateEmployeeDto employeeDto,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes
+    ) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("employeeModel", employeeDto);
+            redirectAttributes.addFlashAttribute(
+                    "org.springframework.validation.BindingResult.employeeModel",
+                    bindingResult
+            );
+            return "redirect:/employees/update/" + fullName;
+        }
+
+        employeeService.updateEmployee(fullName, employeeDto);
 
         return "redirect:/employees/all";
     }
 }
-

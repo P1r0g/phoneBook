@@ -3,7 +3,6 @@ package com.example.phonebook.models.entities;
 import com.example.phonebook.models.enums.DepartmentType;
 import jakarta.persistence.*;
 
-import java.util.Objects;
 
 @Entity
 @Table(name = "department")

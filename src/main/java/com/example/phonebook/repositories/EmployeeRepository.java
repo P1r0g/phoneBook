@@ -2,6 +2,8 @@ package com.example.phonebook.repositories;
 
 import java.util.List;
 
+import com.example.phonebook.dto.UpdateEmployeeDto;
+import com.example.phonebook.models.entities.Department;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -32,4 +34,30 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>{
            "LOWER(e.statusNote) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(e.additionalInfo) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     List<Employee> searchEmployees(@Param("searchTerm") String searchTerm);
+
+    @Modifying
+    @Transactional
+    @Query("""
+    UPDATE Employee e SET 
+        e.department.id = :departmentId,
+        e.officeNumber = :officeNumber,
+        e.workPhone = :workPhone,
+        e.personalPhone = :personalPhone,
+        e.email = :email,
+        e.statusNote = :statusNote,
+        e.additionalInfo = :additionalInfo
+    WHERE CONCAT(e.lastName, ' ', e.firstName, ' ', e.middleName) = :fullName
+""")
+    void updateEmployeeByFullName(
+            @Param("fullName") String fullName,
+            @Param("departmentId") Long departmentId,
+            @Param("officeNumber") String officeNumber,
+            @Param("workPhone") String workPhone,
+            @Param("personalPhone") String personalPhone,
+            @Param("email") String email,
+            @Param("statusNote") String statusNote,
+            @Param("additionalInfo") String additionalInfo
+    );
+
+
 }

@@ -18,6 +18,10 @@
             <p><strong>Кабинет:</strong> <span th:text="${e.officeNumber}"></span></p>
             <p><strong>Дополнительная информация:</strong> <span th:text="${e.additionalInfo}"></span></p>
             <p><strong>хз что:</strong> <span th:text="${e.statusNote}"></span></p>
+            <a th:href="@{'/employees/update/' + ${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}}">
+                Изменить
+            </a>
+
         </div>
     </div>
     <p th:if="${#lists.isEmpty(allEmployees)}" class="text-center">

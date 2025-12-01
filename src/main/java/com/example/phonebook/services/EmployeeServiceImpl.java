@@ -3,6 +3,7 @@ package com.example.phonebook.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.example.phonebook.dto.UpdateEmployeeDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -88,4 +89,31 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.info("По запросу '{}' найдено сотрудников: {}", searchTerm, results.size());        
         return results;
     }
-}   
+
+    @Override
+    public Employee findByFullName(String fullName) {
+        return employeeRepository.findEmployeeByFullName(fullName);
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(cacheNames = "employees", allEntries = true)
+    public void updateEmployee(String fullName, UpdateEmployeeDto dto) {
+
+        employeeRepository.updateEmployeeByFullName(
+                fullName,
+                dto.getDepartmentId(),
+                dto.getOfficeNumber(),
+                dto.getWorkPhone(),
+                dto.getPersonalPhone(),
+                dto.getEmail(),
+                dto.getStatusNote(),
+                dto.getAdditionalInfo()
+        );
+
+        log.info("Сотрудник обновлён: {}", fullName);
+    }
+
+
+
+}
