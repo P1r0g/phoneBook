@@ -9,20 +9,28 @@
     <p>Просмотрите всех сотрудников ИУЦТ</p>
     </hgroup>
     <li><a href="/employees/add">Добавить сотрудника</a></li>
-    <div class="grid">
-        <div th:each="e : ${allEmployees}" class="card">
-            <h3 th:text="${e.lastName} + ' ' + ${e.firstName} + ${e.middleName}"></h3>
-            <p><strong>Рабочий телефон:</strong> <span th:text="${e.workPhone}"></span></p>
-            <p><strong>Личный телефон:</strong> <span th:text="${e.personalPhone}"></span></p>
-            <p><strong>Email:</strong> <span th:text="${e.email}"></span></p>
-            <p><strong>Кабинет:</strong> <span th:text="${e.officeNumber}"></span></p>
-            <p><strong>Дополнительная информация:</strong> <span th:text="${e.additionalInfo}"></span></p>
-            <p><strong>хз что:</strong> <span th:text="${e.statusNote}"></span></p>
-            <a th:href="@{'/employees/update/' + ${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}}">
+    <form method="get" action="/employees/all">
+        <div class="grid">
+            <input type="search" 
+                   name="search" 
+                   th:value="${search}"
+                   placeholder="Поиск сотрудников..." 
+                   aria-label="Поиск">
+            <button type="submit">Найти</button>
+        </div>
+    </form>
+    <div th:each="e : ${allEmployees}" class="card">
+        <h3 th:text="${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}"></h3>
+        <h5 th:text="${e.departmentShortName}"></h5>
+        <p th:if="${e.workPhone}"><strong>Рабочий телефон:</strong> <a th:href="'tel:' + ${#strings.replace(e.workPhone, ' ', '')}" th:text="${e.workPhone}"></a></p>
+        <p th:if="${e.personalPhone}"><strong>Личный телефон:</strong> <a th:href="'tel:' + ${#strings.replace(e.personalPhone, ' ', '')}" th:text="${e.personalPhone}"></a></p>
+        <p th:if="${e.email}"><strong>Email:</strong> <a th:href="'mailto:' + ${e.email}" th:text="${e.email}"></a></p>
+        <p><strong>Кабинет:</strong> <span th:text="${e.officeNumber}"></span></p>
+        <p th:if="${e.additionalInfo}"><strong>Telegram:</strong> <a th:href="'https://t.me/' + ${e.additionalInfo}" th:text="'@' + ${e.additionalInfo}"></a></p>
+        <p th:if="${e.statusNote}"><strong>Дополнительная информация:</strong> <span th:text="${e.statusNoteg}"></span></p>
+        <a th:href="@{'/employees/update/' + ${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}}">
                 Изменить
             </a>
-
-        </div>
     </div>
     <p th:if="${#lists.isEmpty(allEmployees)}" class="text-center">
         <em>Сотрудники не найдены. Добавьте новых сотрудников, чтобы начать!</em>

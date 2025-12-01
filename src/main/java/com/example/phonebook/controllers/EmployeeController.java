@@ -65,8 +65,14 @@ public class EmployeeController {
     // -------------------------------------------
 
     @GetMapping("/all")
-    public String showAllEmployees(Model model) {
-        model.addAttribute("allEmployees", employeeService.allEmployees());
+    public String showAllEmployees(@RequestParam(required = false) String search, Model model) {
+        if (search != null && !search.trim().isEmpty()) {
+            model.addAttribute("allEmployees", employeeService.searchEmployees(search));
+        } else {
+            model.addAttribute("allEmployees", employeeService.allEmployees());
+        }
+        
+        model.addAttribute("search", search);
         return "employee-all";
     }
 

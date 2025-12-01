@@ -34,6 +34,17 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.info("EmployeeServiceImpl инициализорован");
     }
 
+    private ShowEmployeeDto convertToShowEmployeeDtoWithDepartment(Employee employee) {
+        ShowEmployeeDto dto = mapper.map(employee, ShowEmployeeDto.class);
+        
+        // Добавляем shortName из Department
+        if (employee.getDepartment() != null) {
+            dto.setDepartmentShortName(employee.getDepartment().getShortName());
+        }
+        
+        return dto;
+    }
+    
     @Override
     @Transactional
     @CacheEvict(cacheNames = "employees", allEntries = true)

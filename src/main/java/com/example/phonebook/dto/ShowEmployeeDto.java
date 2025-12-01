@@ -14,6 +14,7 @@ public class ShowEmployeeDto implements Serializable {
     private String email;
     private String statusNote;
     private String additionalInfo;
+    private String departmentShortName;
 
     public String getFirstName() {
         return firstName;
@@ -85,5 +86,13 @@ public class ShowEmployeeDto implements Serializable {
 
     public void setAdditionalInfo(String additionalInfo) {
         this.additionalInfo = additionalInfo;
+    }
+
+    public String getDepartmentShortName() {
+        return departmentShortName;
+    }
+    
+    public void setDepartmentShortName(String departmentShortName) {
+        this.departmentShortName = departmentShortName;
     }
 }
