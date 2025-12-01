@@ -1,11 +1,13 @@
-// package com.example.phonebook.services;
+ package com.example.phonebook.services;
 
-// import java.util.List;
+ import com.example.phonebook.dto.ShowDepartmentInfoDto;
 
-// public interface DepartmentService {
+ import java.util.List;
 
-//     List<ShowDepartmentInfoDto> allDepartments();
+ public interface DepartmentService {
 
-//     List<ShowDepartmentInfoDto> searchDepartments(String searchTerm);
+     List<ShowDepartmentInfoDto> allDepartments();
 
-// }
+     List<ShowDepartmentInfoDto> searchDepartments(String searchTerm);
+
+ }

@@ -2,11 +2,12 @@ package com.example.phonebook.dto;
 
 import com.example.phonebook.models.enums.DepartmentType;
 
-public class ShowEmployeeDto {
+import java.io.Serializable;
+
+public class ShowEmployeeDto implements Serializable {
     private String firstName;
     private String lastName;
     private String middleName;
-    private DepartmentType departmentType;
     private String officeNumber;
     private String workPhone;
     private String personalPhone;
@@ -36,14 +37,6 @@ public class ShowEmployeeDto {
 
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
-    }
-
-    public DepartmentType getDepartmentType() {
-        return departmentType;
-    }
-
-    public void setDepartmentType(DepartmentType departmentType) {
-        this.departmentType = departmentType;
     }
 
     public String getOfficeNumber() {

@@ -9,7 +9,7 @@ public class AddEmployeeDto {
     private String firstName;
     private String lastName;
     private String middleName;
-    private Department department;
+    private Long departmentId;
     private String officeNumber;
     private String workPhone;
     private String personalPhone;
@@ -46,12 +46,12 @@ public class AddEmployeeDto {
     }
 
     @NotNull(message = "Выберите подразделение!")
-    public Department getDepartment() {
-        return department;
+    public Long getDepartmentId() {
+        return departmentId;
     }
 
-    public void setDepartment(Department department) {
-        this.department = department;
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
     }
     @NotEmpty(message = "Номер кабинета не может быть пустым")
     @Size(min = 3, message = "Номер кабинета должен быть не менее 3 символов")

@@ -39,7 +39,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void addEmployee(AddEmployeeDto employeeDto) {
         log.debug("Добавление нового сотрудника: {} {} {}", employeeDto.getLastName(), employeeDto.getFirstName(), employeeDto.getMiddleName());
 
-        Department department = departmentRepository.findById(employeeDto.getDepartment().getId()).orElse(null);
+        Department department = departmentRepository.findById(employeeDto.getDepartmentId()).orElse(null);
         if (department == null) {
             log.warn("Попытка добавить сотрудника в несуществующий отдел");
             //throw new EmployeeNotFoundException("Сотрудник с именем '" + employeeFullName + "' не найден");
