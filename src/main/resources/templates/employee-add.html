@@ -136,16 +136,16 @@
                 <small th:if="${#fields.hasErrors('educationLevel')}" th:errors="*{educationLevel}" class="text-danger"></small>
             </fieldset>
 
-            <label for="company">
-                Компания
-                <select id="company" th:field="*{companyName}" required>
+            <!-- <label for="department">
+                Отдел
+                <select id="department" th:field="*{companyName}" required>
                     <option value="">Выберите компанию...</option>
                     <option th:each="c : ${availableCompanies}"
                             th:value="${c.name}"
                             th:text="${c.name}"></option>
                 </select>
                 <small th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}" class="text-danger"></small>
-            </label>
+            </label> -->
 
             <label for="jobTitle">
                 Должность

@@ -10,7 +10,7 @@
     </hgroup>
     <div class="grid">
         <div th:each="e : ${allEmployees}" class="card">
-            <h3 th:text="${e.lastName} + ' ' + ${e.firstName} + ${e.middleName}"></h3>
+            <h3 th:text="${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}"></h3>
             <h3 th:text="${e.department.name}"></h3>
             <p th:if="${e.workPhone}"><strong>Рабочий телефон:</strong> <a th:href="'tel:' + ${e.workPhone}" th:text="${e.workPhone}"></a></p>
             <p th:if="${e.personalPhone}"><strong>Личный телефон:</strong> <a th:href="'tel:' + ${e.personalPhone}" th:text="${e.personalPhone}"></a></p>
