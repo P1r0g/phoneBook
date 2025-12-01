@@ -11,11 +11,12 @@
     <div class="grid">
         <div th:each="e : ${allEmployees}" class="card">
             <h3 th:text="${e.lastName} + ' ' + ${e.firstName} + ${e.middleName}"></h3>
-            <p><strong>Рабочий телефон:</strong> <span th:text="${e.workphone}"></span></p>
-            <p><strong>Личный телефон:</strong> <span th:text="${e.birthDate}"></span></p>
-            <p><strong>Email:</strong> <span th:text="${e.birthDate}"></span></p>
+            <h3 th:text="${e.department.name}"></h3>
+            <p th:if="${e.workPhone}"><strong>Рабочий телефон:</strong> <a th:href="'tel:' + ${e.workPhone}" th:text="${e.workPhone}"></a></p>
+            <p th:if="${e.personalPhone}"><strong>Личный телефон:</strong> <a th:href="'tel:' + ${e.personalPhone}" th:text="${e.personalPhone}"></a></p>
+            <p th:if="${e.email}"><strong>Email:</strong> <a th:href="'mailto:' + ${e.email}" th:text="${e.email}"></a></p>
             <p><strong>Кабинет:</strong> <span th:text="${e.birthDate}"></span></p>
-            <p><strong>Дополнительная информация:</strong> <span th:text="${e.birthDate}"></span></p>
+            <p th:if="${e.additionalInfo}"><strong>Telegram:</strong> <a th:href="'https://t.me/' + ${e.additionalInfo}" th:text="'@' + ${e.additionalInfo}"></a></p>
         </div>
     </div>
     <p th:if="${#lists.isEmpty(allEmployees)}" class="text-center">
