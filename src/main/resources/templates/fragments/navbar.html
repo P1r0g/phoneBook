@@ -4,10 +4,11 @@
             <li><strong><a href="/" style="text-decoration: none;">Управление компаниями</a></strong></li>
         </ul>
         <ul>
-            <li><a href="/employees/all">Сотрудники</a></li>
-            <li sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')"><a href="/moderator/all">Сотрудники отдела</a></li>
-            <li sec:authorize="hasRole('ADMIN')"><a href="/companies/add">Добавить компанию</a></li>
-            <li><a href="/employees/all">Сотрудники</a></li>
+            <li><a href="/index">Главная</a></li>
+            <li sec:authorize="hasRole('USER')"><a href="/employees/all">Сотрудники</a></li>
+            <li sec:authorize="hasRole('MODERATOR')"><a href="/moderator/employees/all">Сотрудники моего отдела</a></li>
+            <li sec:authorize="hasRole('ADMIN')"><a href="/admin/employees/all">Сотрудники</a></li>
+            <li sec:authorize="hasRole('ADMIN')"><a href="/admin/moderators/all">Модераторы</a></li>
             <li sec:authorize="isAuthenticated()">
                 <a href="/users/profile" role="button" class="secondary outline">
                     <th:block sec:authentication="name"></th:block>

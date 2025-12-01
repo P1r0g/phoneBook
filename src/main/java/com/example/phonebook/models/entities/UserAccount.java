@@ -2,6 +2,8 @@ package com.example.phonebook.models.entities;
 
 import com.example.phonebook.models.enums.UserRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "user_account")
@@ -14,7 +16,7 @@ public class UserAccount {
     private String username;
 
     @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -27,6 +29,19 @@ public class UserAccount {
     public UserAccount() {
     }
 
+    public UserAccount(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -35,12 +50,12 @@ public class UserAccount {
         this.username = username;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public UserRole getRole() {

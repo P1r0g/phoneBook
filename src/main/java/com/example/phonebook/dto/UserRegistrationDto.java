@@ -42,7 +42,6 @@ public class UserRegistrationDto {
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
     }
-    @NotEmpty(message = "Необходимо выбрать роль!")
     public UserRole getRole() {
         return role;
     }
@@ -50,12 +49,11 @@ public class UserRegistrationDto {
     public void setRole(UserRole role) {
         this.role = role;
     }
-    @NotEmpty(message = "Необходимо указать подразделение!")
     public Long getDepartmentId() {
         return departmentId;
     }
 
-    public void setDepartmentId(Long department) {
+    public void setDepartmentId(Long departmentId) {
         this.departmentId = departmentId;
     }
 }
