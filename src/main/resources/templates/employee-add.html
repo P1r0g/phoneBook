@@ -13,6 +13,43 @@
               th:method="post"
               th:object="${employeeModel}">
 
+            <div class="grid">
+                <label for="firstName">
+                    Имя
+                    <input th:field="*{firstName}"
+                           th:errorclass="is-invalid"
+                           type="text"
+                           id="firstName"
+                           placeholder="Введите имя"
+                           required/>
+                    <small th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"
+                           class="text-danger"></small>
+                </label>
+
+                <label for="lastName">
+                    Фамилия
+                    <input th:field="*{lastName}"
+                           th:errorclass="is-invalid"
+                           type="text"
+                           id="lastName"
+                           placeholder="Введите фамилию"
+                           required/>
+                    <small th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger"></small>
+                </label>
+
+                <label for="middleName">
+                    Отчество
+                    <input th:field="*{middleName}"
+                           th:errorclass="is-invalid"
+                           type="text"
+                           id="middleName"
+                           placeholder="Введите Отчество"
+                           required/>
+                    <small th:if="${#fields.hasErrors('middleName')}" th:errors="*{middleName}"
+                           class="text-danger"></small>
+                </label>
+            </div>
+
             <label for="department">
                 Подразделение
                 <select id="department" th:field="*{departmentId}" required>
