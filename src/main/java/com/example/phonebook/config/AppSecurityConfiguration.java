@@ -28,7 +28,7 @@ public class AppSecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         // Статические ресурсы доступны всем
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/favicon.ico", "/error").permitAll()
+                        .requestMatchers("/favicon.ico", "/logo.png", "/error").permitAll()
 
                         // Публичные страницы
                         .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
