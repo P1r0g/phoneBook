@@ -2,8 +2,6 @@ package com.example.phonebook.models.entities;
 
 import com.example.phonebook.models.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "user_account")

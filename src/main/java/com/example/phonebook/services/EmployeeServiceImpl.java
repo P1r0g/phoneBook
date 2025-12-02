@@ -33,17 +33,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.mapper = mapper;
         log.info("EmployeeServiceImpl инициализорован");
     }
-
-    private ShowEmployeeDto convertToShowEmployeeDtoWithDepartment(Employee employee) {
-        ShowEmployeeDto dto = mapper.map(employee, ShowEmployeeDto.class);
-        
-        // Добавляем shortName из Department
-        if (employee.getDepartment() != null) {
-            dto.setDepartmentShortName(employee.getDepartment().getShortName());
-        }
-        
-        return dto;
-    }
     
     @Override
     @Transactional

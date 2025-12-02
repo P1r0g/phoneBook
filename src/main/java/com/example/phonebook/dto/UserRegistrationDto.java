@@ -1,6 +1,5 @@
 package com.example.phonebook.dto;
 
-import com.example.phonebook.models.entities.Department;
 import com.example.phonebook.models.enums.UserRole;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;

@@ -1,9 +1,6 @@
 package com.example.phonebook.dto;
 
-import com.example.phonebook.models.entities.Department;
 import jakarta.validation.constraints.*;
-
-import java.time.LocalDate;
 
 public class AddEmployeeDto {
     private String firstName;

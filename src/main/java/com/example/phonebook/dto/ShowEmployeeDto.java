@@ -1,7 +1,5 @@
 package com.example.phonebook.dto;
 
-import com.example.phonebook.models.enums.DepartmentType;
-
 import java.io.Serializable;
 
 public class ShowEmployeeDto implements Serializable {
