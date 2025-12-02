@@ -20,7 +20,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>{
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM Employee AS e WHERE CONCAT(e.lastName, ' ', e.middleName, ' ', e.firstName) = :fullName")
+    @Query("DELETE FROM Employee AS e WHERE CONCAT(e.lastName, ' ', e.firstName, ' ', e.middleName) = :fullName")
     void deleteEmployeeByFullName(String fullName);
 
     @Query("SELECT e FROM Employee e WHERE " +
