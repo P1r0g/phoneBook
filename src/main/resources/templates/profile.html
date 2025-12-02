@@ -11,15 +11,13 @@
   <article class="card">
     <div class="grid">
       <div th:object="${user}">
-        <h2 th:text="*{fullName}"></h2>
-        <p><strong>Логин:</strong> <span th:text="*{username}"></span></p>
+        <h2 th:text="*{userName}"></h2>
+        <p><strong>Логин:</strong> <span th:text="*{userName}"></span></p>
         <div>
           <strong>Роли:</strong>
           <div sec:authentication="principal.authorities" style="margin-top: 0.5rem;"></div>
         </div>
-      </div>
-      <div class="text-center">
-        <img src="/pic/employee.png" alt="Профиль пользователя" style="width: 100%; max-width: 300px; border-radius: var(--pico-border-radius);">
+        <p><strong>Отдел: </strong><span th:text="*{departmentName}"></span></p>
       </div>
     </div>
   </article>

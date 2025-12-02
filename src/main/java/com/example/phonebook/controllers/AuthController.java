@@ -1,12 +1,15 @@
 package com.example.phonebook.controllers;
 
 import com.example.phonebook.dto.UserRegistrationDto;
+import com.example.phonebook.models.entities.UserAccount;
 import com.example.phonebook.services.AuthService;
 import com.example.phonebook.services.DepartmentService;
+import com.example.phonebook.view.UserProfileView;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.Principal;
 
 
 @Slf4j
@@ -80,4 +85,23 @@ public class AuthController {
         return "redirect:/users/login";
     }
 
+
+    @GetMapping("/profile")
+    @Transactional
+    public String profile(Principal principal, Model model) {
+        String username = principal.getName();
+        log.debug("Отображение профиля пользователя: {}", username);
+
+        UserAccount user = authService.getUser(username);
+
+        UserProfileView userProfileView = new UserProfileView(
+                username,
+                user.getRole()
+        );
+
+        userProfileView.setDepartmentName(user.getDepartment().getFullName());
+        model.addAttribute("user", userProfileView);
+
+        return "profile";
+    }
 }
