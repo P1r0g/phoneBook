@@ -67,7 +67,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Cacheable(value = "employees", key = "'all'")
     public List<ShowEmployeeDto> allEmployees() {
         log.debug("Получение списка всех сотрудников");
-        List<ShowEmployeeDto> employees = employeeRepository.findAll().stream()
+        List<ShowEmployeeDto> employees = employeeRepository.findAllOrderedByLastName().stream()
                 .map(employee -> mapper.map(employee, ShowEmployeeDto.class))
                 .collect(Collectors.toList());
         log.debug("Найдено сотрудников: {}", employees.size());

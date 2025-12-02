@@ -32,9 +32,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>{
            "LOWER(e.personalPhone) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(e.email) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(e.statusNote) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(e.additionalInfo) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+           "LOWER(e.additionalInfo) LIKE LOWER(CONCAT('%', :searchTerm, '%'))" +
+            "ORDER BY e.lastName ASC, e.firstName ASC")
     List<Employee> searchEmployees(@Param("searchTerm") String searchTerm);
 
+     @Query("SELECT e FROM Employee e ORDER BY e.lastName ASC, e.firstName ASC")
+    List<Employee> findAllOrderedByLastName();
+    
     @Modifying
     @Transactional
     @Query("""
