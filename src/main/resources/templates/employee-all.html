@@ -33,14 +33,14 @@
         margin-top: 20px;
     ">
         <div th:each="e : ${allEmployees}" class="card" style="margin-bottom: 0;">
-            <h3>
+            <h7>
                 <span th:text="${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}"></span>
                 <span sec:authorize="hasRole('ADMIN')" style="margin-left: 10px;">
                     <a th:href="@{'/employees/update/' + ${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}}">
                         Изменить
                     </a>
                 </span>
-            </h3>
+            </h7>
             <h5 th:text="${e.departmentShortName}"></h5>
             <p th:if="${e.workPhone}"><strong>Рабочий телефон:</strong> <a th:href="'tel:' + ${#strings.replace(e.workPhone, ' ', '')}" th:text="${e.workPhone}"></a></p>
             <p th:if="${e.personalPhone}"><strong>Личный телефон:</strong> <a th:href="'tel:' + ${#strings.replace(e.personalPhone, ' ', '')}" th:text="${e.personalPhone}"></a></p>

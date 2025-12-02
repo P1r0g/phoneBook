@@ -1,10 +1,17 @@
 <nav xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
     <div class="container">
         <ul>
-            <li><strong><a href="/" style="text-decoration: none;">Управление компаниями</a></strong></li>
+            <li>
+                <strong>
+                    <a href="/" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                        <img th:src="@{/logo.png}" alt="Логотип ИУЦТ" style="height: 40px; width: auto;">
+                        Телефонный справочник ИУЦТ
+                    </a>
+                </strong>
+            </li>
         </ul>
         <ul>
-            <li><a href="/index">Главная</a></li>
+            <li><a href="/">Главная</a></li>
             <li><a href="/employees/all">Сотрудники</a></li>
 <!--            <li sec:authorize="hasRole('MODERATOR')"><a href="/moderator/employees/all">Сотрудники моего отдела</a></li>-->
 <!--            <li sec:authorize="hasRole('ADMIN')"><a href="/admin/employees/all">Сотрудники</a></li>-->
