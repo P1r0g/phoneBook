@@ -3,6 +3,7 @@ package com.example.phonebook.services;
 import com.example.phonebook.dto.UserRegistrationDto;
 import com.example.phonebook.models.entities.UserAccount;
 import com.example.phonebook.models.enums.UserRole;
+import com.example.phonebook.repositories.DepartmentRepository;
 import com.example.phonebook.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,10 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final DepartmentRepository departmentRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(UserRepository userRepository,DepartmentRepository departmentRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.departmentRepository = departmentRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -28,17 +31,17 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("passwords.match");
         }
 
-        var userRole = UserRole.MODERATOR;
-
         UserAccount user = new UserAccount(
                 registrationDTO.getUsername(),
-                passwordEncoder.encode(registrationDTO.getPassword())
+                passwordEncoder.encode(registrationDTO.getPassword()),
+                registrationDTO.getRole()
         );
 
-        user.setRole(userRole);
+        user.setDepartment(departmentRepository.findById(registrationDTO.getDepartmentId()).orElse(null));
 
         userRepository.save(user);
     }
+
 
     @Override
     public UserAccount getUser(String username) {

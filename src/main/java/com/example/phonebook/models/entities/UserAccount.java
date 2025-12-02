@@ -27,9 +27,10 @@ public class UserAccount {
     public UserAccount() {
     }
 
-    public UserAccount(String username, String password) {
+    public UserAccount(String username, String password, UserRole role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
     public Long getId() {

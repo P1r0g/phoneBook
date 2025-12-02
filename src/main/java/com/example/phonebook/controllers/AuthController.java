@@ -2,10 +2,12 @@ package com.example.phonebook.controllers;
 
 import com.example.phonebook.dto.UserRegistrationDto;
 import com.example.phonebook.services.AuthService;
+import com.example.phonebook.services.DepartmentService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,9 +22,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AuthController {
 
     private final AuthService authService;
+    private final DepartmentService departmentService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, DepartmentService departmentService) {
         this.authService = authService;
+        this.departmentService = departmentService;
         log.info("AuthController инициализирован");
     }
 
@@ -32,8 +36,9 @@ public class AuthController {
     }
 
     @GetMapping("/register")
-    public String register() {
+    public String register(Model model) {
         log.debug("Отображение страницы регистрации");
+        model.addAttribute("departments", departmentService.allDepartments());
         return "register";
     }
 

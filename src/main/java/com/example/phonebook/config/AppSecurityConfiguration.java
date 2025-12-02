@@ -26,39 +26,28 @@ public class AppSecurityConfiguration {
                                                    SecurityContextRepository securityContextRepository) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        // Статические ресурсы доступны всем
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/favicon.ico", "/logo.png", "/error").permitAll()
-
-                        // Публичные страницы
+                        .requestMatchers("/favicon.ico", "/error").permitAll()
                         .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
                         .requestMatchers("/actuator/").permitAll()
-
-                        // Защищенные страницы
                         .requestMatchers("/users/profile").authenticated()
-
-                        // Доступ только для модераторов и админов
                         .requestMatchers("/employees/add", "/employees/employee-delete/*")
                         .hasAnyAuthority("ROLE_MODERATOR", "ROLE_ADMIN")
-
-                        // Доступ только для админов
                         .requestMatchers("/companies/add", "/companies/company-delete/*")
                         .hasAuthority("ROLE_ADMIN")
-
-                        // Все остальные запросы требуют аутентификации
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/users/login")
-                        .usernameParameter("username")  // Имя параметра из формы
-                        .passwordParameter("password")   // Имя параметра из формы
-                        .defaultSuccessUrl("/", true)    // После успешного входа
-                        .failureUrl("/users/login?error=true")  // При ошибке
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/users/login?error=true")
                         .permitAll()
                 )
                 .rememberMe(remember -> remember
                         .key("uniqueAndSecret")
-                        .tokenValiditySeconds(86400 * 7) // 7 дней
+                        .tokenValiditySeconds(86400 * 7)
                         .rememberMeParameter("remember-me")
                 )
                 .logout(logout -> logout
