@@ -27,9 +27,6 @@ public class EmployeeController {
         log.info("EmployeeController инициализирован");
     }
 
-    // -------------------------------------------
-    //                ADD EMPLOYEE
-    // -------------------------------------------
 
     @GetMapping("/add")
     public String addEmployeeForm(Model model) {
@@ -60,9 +57,6 @@ public class EmployeeController {
         return "redirect:/employees/all";
     }
 
-    // -------------------------------------------
-    //             SHOW ALL EMPLOYEES
-    // -------------------------------------------
 
     @GetMapping("/all")
     public String showAllEmployees(@RequestParam(required = false) String search, Model model) {
@@ -76,9 +70,6 @@ public class EmployeeController {
         return "employee-all";
     }
 
-    // -------------------------------------------
-    //              DELETE EMPLOYEE
-    // -------------------------------------------
 
     @DeleteMapping("/employee-delete/{employee-full-name}")
     public String fireEmployee(@PathVariable("employee-full-name") String employeeFullName) {
@@ -86,9 +77,6 @@ public class EmployeeController {
         return "redirect:/employees/all";
     }
 
-    // -------------------------------------------
-    //             UPDATE EMPLOYEE (FORM)
-    // -------------------------------------------
 
     @GetMapping("/update/{fullName}")
     public String showUpdateForm(
@@ -117,9 +105,6 @@ public class EmployeeController {
         return "employee-update";
     }
 
-    // -------------------------------------------
-    //           UPDATE EMPLOYEE (SUBMIT)
-    // -------------------------------------------
 
     @PostMapping("/update/{fullName}")
     public String updateEmployee(

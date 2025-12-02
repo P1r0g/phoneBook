@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:replace="fragments/head"/>
 <body>
 <div th:replace="fragments/navbar"></div>
@@ -8,23 +8,23 @@
         <h1>Все сотрудники</h1>
         <p>Просмотрите всех сотрудников ИУЦТ</p>
     </hgroup>
-    
+
     <div sec:authorize="hasRole('ADMIN')">
         <button onclick="window.location.href='/employees/add'" class="button">Добавить сотрудника</button>
     </div>
-    
+
     <form method="get" action="/employees/all">
         <div class="grid">
-            <input type="search" 
-                   name="search" 
+            <input type="search"
+                   name="search"
                    th:value="${search}"
-                   placeholder="Поиск сотрудников..." 
+                   placeholder="Поиск сотрудников..."
                    aria-label="Поиск"
                    onchange="this.form.submit()"
                    oninput="this.form.dispatchEvent(new Event('submit', {bubbles: true}))">
         </div>
     </form>
-    
+
     <!-- Добавляем стиль прямо здесь -->
     <div style="
         display: grid;
@@ -50,7 +50,6 @@
             <p th:if="${e.statusNote}"><strong>Дополнительная информация:</strong> <span th:text="${e.statusNote}"></span></p>
         </div>
     </div>
-    
     <p th:if="${#lists.isEmpty(allEmployees)}" class="text-center">
         <em>Сотрудники не найдены. Добавьте новых сотрудников, чтобы начать!</em>
     </p>

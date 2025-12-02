@@ -9,7 +9,7 @@
             <h1>Добавление сотрудника</h1>
             <p>Заполните информацию о сотруднике</p>
         </hgroup>
-        <form th:action="@{'/employees/update/' + ${fullName}}"
+        <form th:action="@{/employees/add}"
               th:method="post"
               th:object="${employeeModel}">
 
@@ -84,7 +84,7 @@
                 <input th:field="*{additionalInfo}" id="additionalInfo" />
             </label>
 
-            <button type="submit">Изменить сотрудника</button>
+            <button type="submit">Добавить сотрудника</button>
 
         </form>
 

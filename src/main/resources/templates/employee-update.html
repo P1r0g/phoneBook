@@ -8,7 +8,7 @@
         <hgroup>
             <h1>Изменение сотрудника</h1>
         </hgroup>
-        <form th:action="@{/employees/update/ + }"
+        <form th:action="@{'/employees/update/' + ${fullName}}"
               th:method="post"
               th:object="${employeeModel}">
 
