@@ -27,7 +27,7 @@ public class AppSecurityConfiguration {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/favicon.ico", "/error").permitAll()
+                        .requestMatchers("/favicon.ico", "/error", "/logo.png").permitAll()
                         .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
                         .requestMatchers("/actuator/").permitAll()
                         .requestMatchers("/users/profile").authenticated()

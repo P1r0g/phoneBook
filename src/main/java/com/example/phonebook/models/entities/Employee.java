@@ -3,15 +3,7 @@ package com.example.phonebook.models.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(
-        name = "employee",
-        indexes = {
-                @Index(name = "idx_employee_last_name", columnList = "last_name"),
-                @Index(name = "idx_employee_first_name", columnList = "first_name"),
-                @Index(name = "idx_employee_department_id", columnList = "department_id"),
-                @Index(name = "idx_employee_fullname", columnList = "last_name, first_name, middle_name")
-        }
-)
+@Table( name = "employee")
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
