@@ -13,67 +13,120 @@
         <button onclick="window.location.href='/employees/add'" class="button">Добавить сотрудника</button>
     </div>
 
-    <form method="get" action="/employees/all">
+    <form method="get" action="/employees/all" id="searchForm">
         <div class="grid">
             <input type="search"
                    name="search"
                    th:value="${search}"
                    placeholder="Поиск сотрудников..."
                    aria-label="Поиск"
-                   onchange="this.form.submit()"
-                   oninput="this.form.dispatchEvent(new Event('submit', {bubbles: true}))">
+                   id="searchInput"
+                   autocomplete="off">
         </div>
     </form>
 
-    <!-- Добавляем стиль прямо здесь -->
-    <div style="
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 25px;
-        margin-top: 20px;
-    ">
-        <div th:each="e : ${allEmployees}" class="card" style="margin-bottom: 0;">
-            <h7>
-                <span th:text="${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}"></span>
-                <span sec:authorize="hasRole('ADMIN')" style="margin-left: 10px;">
-                    <a th:href="@{'/employees/update/' + ${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}}">
-                        Изменить
-                    </a>
-                </span>
-            </h7>
-            <h5 th:text="${e.departmentShortName}"></h5>
-            <p th:if="${e.workPhone}"><strong>Рабочий телефон:</strong> <a th:href="'tel:' + ${#strings.replace(e.workPhone, ' ', '')}" th:text="${e.workPhone}"></a></p>
-            <p th:if="${e.personalPhone}"><strong>Личный телефон:</strong> <a th:href="'tel:' + ${#strings.replace(e.personalPhone, ' ', '')}" th:text="${e.personalPhone}"></a></p>
-            <p th:if="${e.email}"><strong>Email:</strong> <a th:href="'mailto:' + ${e.email}" th:text="${e.email}"></a></p>
-            <p><strong>Кабинет:</strong> <span th:text="${e.officeNumber}"></span></p>
-            <p th:if="${e.additionalInfo}"><strong>Telegram:</strong> <a th:href="'https://t.me/' + ${e.additionalInfo}" th:text="'@' + ${e.additionalInfo}"></a></p>
-            <p th:if="${e.statusNote}"><strong>Дополнительная информация:</strong> <span th:text="${e.statusNote}"></span></p>
-            
-            <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
-                <form th:action="@{/employees/employee-delete/{name}(name=${e.lastName + ' ' + e.firstName + ' ' + e.middleName})}"
-                      th:method="delete"
-                      onsubmit="return confirm('Вы уверены, что хотите удалить этого сотрудника?')">
-                    <button type="submit" class="secondary">Удалить сотрудника</button>
-                </form>
+    <div id="resultsContainer">
+        <div style="
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 20px;
+        ">
+            <div th:each="e : ${allEmployees}" class="card" style="margin-bottom: 0;">
+                <h7>
+                    <span th:text="${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}"></span>
+                    <span sec:authorize="hasRole('ADMIN')" style="margin-left: 10px;">
+                        <a th:href="@{'/employees/update/' + ${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}}">
+                            Изменить
+                        </a>
+                    </span>
+                </h7>
+                <h5 th:text="${e.departmentShortName}"></h5>
+                <p th:if="${e.workPhone}"><strong>Рабочий телефон:</strong> <a th:href="'tel:' + ${#strings.replace(e.workPhone, ' ', '')}" th:text="${e.workPhone}"></a></p>
+                <p th:if="${e.personalPhone}"><strong>Личный телефон:</strong> <a th:href="'tel:' + ${#strings.replace(e.personalPhone, ' ', '')}" th:text="${e.personalPhone}"></a></p>
+                <p th:if="${e.email}"><strong>Email:</strong> <a th:href="'mailto:' + ${e.email}" th:text="${e.email}"></a></p>
+                <p><strong>Кабинет:</strong> <span th:text="${e.officeNumber}"></span></p>
+                <p th:if="${e.additionalInfo}"><strong>Telegram:</strong> <a th:href="'https://t.me/' + ${e.additionalInfo}" th:text="'@' + ${e.additionalInfo}"></a></p>
+                <p th:if="${e.statusNote}"><strong>Дополнительная информация:</strong> <span th:text="${e.statusNote}"></span></p>
+                
+                <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+                    <form th:action="@{/employees/employee-delete/{name}(name=${e.lastName + ' ' + e.firstName + ' ' + e.middleName})}"
+                          th:method="delete"
+                          onsubmit="return confirm('Вы уверены, что хотите удалить этого сотрудника?')">
+                        <button type="submit" class="secondary">Удалить сотрудника</button>
+                    </form>
+                </div>
             </div>
         </div>
+        
+        <p th:if="${#lists.isEmpty(allEmployees)}" class="text-center">
+            <em>Сотрудники не найдены. Добавьте новых сотрудников, чтобы начать!</em>
+        </p>
     </div>
-    
-    <p th:if="${#lists.isEmpty(allEmployees)}" class="text-center">
-        <em>Сотрудники не найдены. Добавьте новых сотрудников, чтобы начать!</em>
-    </p>
 </main>
 
+<footer th:replace="fragments/footer"></footer>
+
 <script>
-    let searchTimeout;
-    document.querySelector('input[name="search"]').addEventListener('input', function(e) {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            this.form.submit();
-        }, 1000);
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const resultsContainer = document.getElementById('resultsContainer');
+        let debounceTimer;
+
+        searchInput.addEventListener('input', function() {
+            const cursorPosition = this.selectionStart;
+            const searchValue = this.value;
+            
+            clearTimeout(debounceTimer);
+            
+            debounceTimer = setTimeout(() => {
+                const url = new URL(window.location.href.split('?')[0]);
+                url.searchParams.set('search', searchValue);
+                
+                fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    const newResultsContainer = doc.getElementById('resultsContainer');
+                    
+                    if (newResultsContainer) {
+                        resultsContainer.innerHTML = newResultsContainer.innerHTML;
+                    }
+                    
+                    searchInput.focus();
+                    searchInput.setSelectionRange(cursorPosition, cursorPosition);
+                })
+                .catch(error => {
+                    console.error('Ошибка при поиске:', error);
+                });
+            }, 300);
+        });
+
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                clearTimeout(debounceTimer);
+                
+                const event = new Event('input', {
+                    bubbles: true,
+                    cancelable: true,
+                });
+                this.dispatchEvent(event);
+            }
+        });
+        searchInput.focus();
     });
 </script>
-
-<footer th:replace="fragments/footer"></footer>
 </body>
 </html>
