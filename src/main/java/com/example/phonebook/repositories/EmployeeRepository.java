@@ -36,7 +36,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>{
 
      @Query("SELECT e FROM Employee e ORDER BY e.lastName ASC, e.firstName ASC")
     List<Employee> findAllOrderedByLastName();
-    
+
     @Modifying
     @Transactional
     @Query("""
@@ -61,5 +61,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>{
             @Param("additionalInfo") String additionalInfo
     );
 
+    @Query("SELECT e FROM Employee e WHERE e.department.id = :departmentId ORDER BY e.lastName ASC, e.firstName ASC")
+    List<Employee> findByDepartmentId(@Param("departmentId") Long departmentId);
 
 }

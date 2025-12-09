@@ -62,7 +62,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.debug("Найдено сотрудников: {}", employees.size());
         return employees;
         }
-
+    
+    @Override
+    public List<ShowEmployeeDto> findEmployeesByDepartment(Long departmentId) {
+        log.debug("Получение сотрудников отдела: {}", departmentId);
+        List<ShowEmployeeDto> employees = employeeRepository.findByDepartmentId(departmentId).stream()
+            .map(employee -> mapper.map(employee, ShowEmployeeDto.class))
+            .collect(Collectors.toList());
+        log.debug("Найдено сотрудников в отделе: {}", employees.size());
+    return employees;
+}
 
     @Override
     @Transactional

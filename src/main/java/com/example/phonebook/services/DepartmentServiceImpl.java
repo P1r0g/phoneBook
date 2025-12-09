@@ -1,7 +1,8 @@
  package com.example.phonebook.services;
 
  import java.util.List;
- import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
  import com.example.phonebook.dto.ShowDepartmentInfoDto;
  import org.modelmapper.ModelMapper;
@@ -46,5 +47,11 @@
          log.info("По запросу '{}' найдено отделов: {}", searchTerm, results.size());
          return results;
      }
+
+     @Override
+    public Optional<ShowDepartmentInfoDto> getDepartmentById(Long id) {
+    return departmentRepository.findById(id)
+            .map(dept -> mapper.map(dept, ShowDepartmentInfoDto.class));
+}
     
  }

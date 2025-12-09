@@ -59,14 +59,23 @@ public class EmployeeController {
 
 
     @GetMapping("/all")
-    public String showAllEmployees(@RequestParam(required = false) String search, Model model) {
+    public String showAllEmployees(@RequestParam(required = false) String search, @RequestParam(required = false) Long department, Model model) {
+
         if (search != null && !search.trim().isEmpty()) {
             model.addAttribute("allEmployees", employeeService.searchEmployees(search));
+        } else if(department != null) {
+            model.addAttribute("allEmployees", employeeService.findEmployeesByDepartment(department));
+            model.addAttribute("selectedDepartment", department);
+        // Получаем название отдела для отображения
+        departmentService.getDepartmentById(department).ifPresent(dept -> {
+            model.addAttribute("selectedDepartmentName", dept.getShortName());
+        });
         } else {
             model.addAttribute("allEmployees", employeeService.allEmployees());
         }
         
         model.addAttribute("search", search);
+        model.addAttribute("departments", departmentService.allDepartments());
         return "employee-all";
     }
 

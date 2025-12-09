@@ -16,6 +16,8 @@ public interface EmployeeService {
     List<ShowEmployeeDto> searchEmployees(String searchTerm);
 
     Employee findByFullName(String fullName);
+    
+    List<ShowEmployeeDto> findEmployeesByDepartment(Long departmentId);
 
     void updateEmployee(String fullName, UpdateEmployeeDto dto);
 
