@@ -31,13 +31,15 @@
                        name="search"
                        th:value="${search}"
                        placeholder="Поиск сотрудников..."
+                       th:attr="placeholder=${selectedDepartment != null} ? 'Поиск в отделе' : 'Поиск сотрудников...'"
                        aria-label="Поиск"
                        id="searchInput"
                        autocomplete="off"
                        style="flex-grow: 1;">
                 <input type="hidden" 
                        name="department" 
-                       th:value="${selectedDepartment}">
+                       th:value="${selectedDepartment}"
+                       id="departmentHidden">
             </div>
         </form>
 
@@ -115,21 +117,12 @@
 
 <footer th:replace="fragments/footer"></footer>
 
-<style>
-    .department-btn.active {
-        background-color: #007bff;
-        color: white;
-        border-color: #007bff;
-        font-weight: bold;
-    }
-</style>
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput');
         const resultsContainer = document.getElementById('resultsContainer');
         const searchForm = document.getElementById('searchForm');
-        const departmentInput = searchForm.querySelector('input[name="department"]');
+        const departmentHidden = document.getElementById('departmentHidden');
         let debounceTimer;
 
         searchInput.addEventListener('input', function() {
@@ -139,14 +132,20 @@
             clearTimeout(debounceTimer);
             
             debounceTimer = setTimeout(() => {
-                const url = new URL(window.location.href.split('?')[0]);
-                url.searchParams.set('search', searchValue);
+                // Получаем текущий URL и параметры
+                const url = new URL(window.location.origin + '/employees/all');
                 
-                // Добавляем параметр отдела, если он есть
-                const currentDepartment = new URL(window.location.href).searchParams.get('department');
-                if (currentDepartment) {
-                    url.searchParams.set('department', currentDepartment);
+                // Добавляем параметр поиска
+                if (searchValue.trim() !== '') {
+                    url.searchParams.set('search', searchValue);
                 }
+                
+                // Добавляем параметр отдела из скрытого поля
+                if (departmentHidden && departmentHidden.value) {
+                    url.searchParams.set('department', departmentHidden.value);
+                }
+                
+                console.log('Fetching URL:', url.toString());
                 
                 fetch(url, {
                     headers: {
@@ -192,6 +191,19 @@
         });
         
         searchInput.focus();
+        
+        // Обновляем placeholder при выборе отдела
+        function updatePlaceholder() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const department = urlParams.get('department');
+            if (department) {
+                searchInput.placeholder = 'Поиск в отделе...';
+            } else {
+                searchInput.placeholder = 'Поиск сотрудников...';
+            }
+        }
+        
+        updatePlaceholder();
     });
 </script>
 </body>

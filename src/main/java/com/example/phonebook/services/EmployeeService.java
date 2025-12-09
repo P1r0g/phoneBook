@@ -20,6 +20,8 @@ public interface EmployeeService {
     List<ShowEmployeeDto> findEmployeesByDepartment(Long departmentId);
 
     void updateEmployee(String fullName, UpdateEmployeeDto dto);
+    
+    List<ShowEmployeeDto> searchEmployeesInDepartment(String searchTerm, Long departmentId);
 
     void fireEmployee(String employeeFullName);
 }

@@ -1,12 +1,16 @@
 package com.example.phonebook.controllers;
 
 import com.example.phonebook.dto.AddEmployeeDto;
+import com.example.phonebook.dto.ShowDepartmentInfoDto;
 import com.example.phonebook.dto.UpdateEmployeeDto;
 import com.example.phonebook.models.entities.Employee;
 import com.example.phonebook.services.DepartmentService;
 import com.example.phonebook.services.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -59,25 +63,48 @@ public class EmployeeController {
 
 
     @GetMapping("/all")
-    public String showAllEmployees(@RequestParam(required = false) String search, @RequestParam(required = false) Long department, Model model) {
+public String showAllEmployees(@RequestParam(required = false) String search, 
+                               @RequestParam(required = false) Long department, 
+                               Model model) {
 
-        if (search != null && !search.trim().isEmpty()) {
-            model.addAttribute("allEmployees", employeeService.searchEmployees(search));
-        } else if(department != null) {
-            model.addAttribute("allEmployees", employeeService.findEmployeesByDepartment(department));
-            model.addAttribute("selectedDepartment", department);
-        // Получаем название отдела для отображения
-        departmentService.getDepartmentById(department).ifPresent(dept -> {
-            model.addAttribute("selectedDepartmentName", dept.getShortName());
-        });
+    List<ShowDepartmentInfoDto> departments = departmentService.allDepartments();
+    model.addAttribute("departments", departments);
+    
+    if (search != null && !search.trim().isEmpty()) {
+        if (department != null) {
+            model.addAttribute("allEmployees", employeeService.searchEmployeesInDepartment(search, department));
         } else {
-            model.addAttribute("allEmployees", employeeService.allEmployees());
+            model.addAttribute("allEmployees", employeeService.searchEmployees(search));
+        }
+        model.addAttribute("search", search);
+        model.addAttribute("selectedDepartment", department);
+        
+        if (department != null) {
+            String selectedDepartmentName = departments.stream()
+                .filter(d -> d.getId().equals(department))
+                .findFirst()
+                .map(ShowDepartmentInfoDto::getShortName)
+                .orElse("Неизвестный отдел");
+            model.addAttribute("selectedDepartmentName", selectedDepartmentName);
         }
         
-        model.addAttribute("search", search);
-        model.addAttribute("departments", departmentService.allDepartments());
-        return "employee-all";
+    } else if (department != null) {
+        model.addAttribute("allEmployees", employeeService.findEmployeesByDepartment(department));
+        model.addAttribute("selectedDepartment", department);
+        
+        String selectedDepartmentName = departments.stream()
+            .filter(d -> d.getId().equals(department))
+            .findFirst()
+            .map(ShowDepartmentInfoDto::getShortName)
+            .orElse("Неизвестный отдел");
+        model.addAttribute("selectedDepartmentName", selectedDepartmentName);
+        
+    } else {
+        model.addAttribute("allEmployees", employeeService.allEmployees());
     }
+    
+    return "employee-all";
+}
 
 
     @DeleteMapping("/employee-delete/{employee-full-name}")

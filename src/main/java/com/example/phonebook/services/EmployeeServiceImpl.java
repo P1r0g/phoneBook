@@ -90,6 +90,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public List<ShowEmployeeDto> searchEmployeesInDepartment(String searchTerm, Long departmentId) {
+        log.debug("Поиск сотрудников в отделе {} по запросу: {}", departmentId, searchTerm);
+        List<ShowEmployeeDto> results = employeeRepository.searchEmployeesInDepartment(searchTerm, departmentId).stream()
+            .map(employee -> mapper.map(employee, ShowEmployeeDto.class))
+            .collect(Collectors.toList());
+        log.info("По запросу '{}' в отделе {} найдено сотрудников: {}", searchTerm, departmentId, results.size());        
+        return results;
+    }
+
+    @Override
     public List<ShowEmployeeDto> searchEmployees(String searchTerm) {
         log.debug("Поиск сотрудников по запросу: {}", searchTerm);
         List<ShowEmployeeDto> results = employeeRepository.searchEmployees(searchTerm).stream()
