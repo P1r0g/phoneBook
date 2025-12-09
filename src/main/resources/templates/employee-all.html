@@ -33,22 +33,47 @@
             margin-top: 20px;
         ">
             <div th:each="e : ${allEmployees}" class="card" style="margin-bottom: 0;">
-                <h7>
-                    <span th:text="${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}"></span>
-                    <span sec:authorize="hasRole('ADMIN')" style="margin-left: 10px;">
-                        <a th:href="@{'/employees/update/' + ${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}}">
-                            Изменить
-                        </a>
-                    </span>
-                </h7>
-                <h5 th:text="${e.departmentShortName}"></h5>
-                <p th:if="${e.workPhone}"><strong>Рабочий телефон:</strong> <a th:href="'tel:' + ${#strings.replace(e.workPhone, ' ', '')}" th:text="${e.workPhone}"></a></p>
-                <p th:if="${e.personalPhone}"><strong>Личный телефон:</strong> <a th:href="'tel:' + ${#strings.replace(e.personalPhone, ' ', '')}" th:text="${e.personalPhone}"></a></p>
-                <p th:if="${e.email}"><strong>Email:</strong> <a th:href="'mailto:' + ${e.email}" th:text="${e.email}"></a></p>
-                <p><strong>Кабинет:</strong> <span th:text="${e.officeNumber}"></span></p>
-                <p th:if="${e.additionalInfo}"><strong>Telegram:</strong> <a th:href="'https://t.me/' + ${e.additionalInfo}" th:text="'@' + ${e.additionalInfo}"></a></p>
-                <p th:if="${e.statusNote}"><strong>Дополнительная информация:</strong> <span th:text="${e.statusNote}"></span></p>
+                <h3><strong th:text="${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}"></strong></h3>
+                <h4><strong th:text="${e.departmentShortName}"></strong></h5>
+                <p th:if="${e.workPhone}">
+                    Рабочий телефон: 
+                    <a th:href="'tel:' + ${#strings.replace(e.workPhone, ' ', '')}" 
+                    th:text="${e.workPhone}"
+                    style="font-weight: bold; text-decoration: none;"></a>
+                    </p>
+                    <p th:if="${e.personalPhone}">
+                    Личный телефон: 
+                    <a th:href="'tel:' + ${#strings.replace(e.personalPhone, ' ', '')}" 
+                    th:text="${e.personalPhone}"
+                    style="font-weight: bold; text-decoration: none;"></a>
+                    </p>
+                    <p th:if="${e.email}">
+                    Email:
+                    <a th:href="'mailto:' + ${e.email}" 
+                    th:text="${e.email}"
+                    style="font-weight: bold; text-decoration: none;"></a>
+                    </p>
+                    <p>
+                    Кабинет:
+                    <span th:text="${e.officeNumber}" style="font-weight: bold;"></span>
+                    </p>
+                    <p th:if="${e.additionalInfo}">
+                    Telegram:
+                    <a th:href="'https://t.me/' + ${e.additionalInfo}" 
+                    th:text="'@' + ${e.additionalInfo}"
+                    style="font-weight: bold; text-decoration: none;"></a>
+                    </p>
+                    <p th:if="${e.statusNote}">
+                    Дополнительная информация:
+                    <span th:text="${e.statusNote}" style="font-weight: bold;"></span>
+                    </p>
                 
+                <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+                    <form th:action="@{/employees/employee-update/{name}(name=${e.lastName + ' ' + e.firstName + ' ' + e.middleName})}"
+                        th:method="get">
+                        <button type="submit" class="primary">Изменить</button>
+                        </form>
+                    </div>
                 <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
                     <form th:action="@{/employees/employee-delete/{name}(name=${e.lastName + ' ' + e.firstName + ' ' + e.middleName})}"
                           th:method="delete"
