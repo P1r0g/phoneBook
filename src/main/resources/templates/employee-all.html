@@ -6,12 +6,7 @@
 <main class="container">
     <hgroup>
         <h1>Все сотрудники</h1>
-        <p>Просмотрите всех сотрудников ИУЦТ</p>
     </hgroup>
-
-    <div sec:authorize="hasRole('ADMIN')">
-        <button onclick="window.location.href='/employees/add'" class="button">Добавить сотрудника</button>
-    </div>
 
     <form method="get" action="/employees/all" id="searchForm">
         <div class="grid">
@@ -69,7 +64,7 @@
                     </p>
                 
                 <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
-                    <form th:action="@{/employees/employee-update/{name}(name=${e.lastName + ' ' + e.firstName + ' ' + e.middleName})}"
+                    <form th:action="@{/employees/update/{name}(name=${e.lastName + ' ' + e.firstName + ' ' + e.middleName})}"
                         th:method="get">
                         <button type="submit" class="primary">Изменить</button>
                         </form>

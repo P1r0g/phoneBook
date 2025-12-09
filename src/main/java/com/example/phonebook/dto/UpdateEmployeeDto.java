@@ -43,8 +43,8 @@ public class UpdateEmployeeDto {
     public void setEmail(String email) { this.email = email; }
 
     public String getStatusNote() { return statusNote; }
-    public void setStatusNote(String statusNote) { this.statusNote = statusNote; }
+    public void setStatusNote(String statusNote) { this.statusNote = (statusNote != null && statusNote.trim().isEmpty()) ? null : statusNote; }
 
     public String getAdditionalInfo() { return additionalInfo; }
-    public void setAdditionalInfo(String additionalInfo) { this.additionalInfo = additionalInfo; }
+    public void setAdditionalInfo(String additionalInfo) { this.additionalInfo = (additionalInfo != null && additionalInfo.trim().isEmpty()) ? null : additionalInfo; }
 }

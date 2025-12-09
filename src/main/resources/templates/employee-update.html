@@ -69,23 +69,21 @@
                 </label>
 
                 <label for="statusNote">
-                    хз что
+                    Дополнительная информация
                     <input th:field="*{statusNote}"
                            th:errorclass="is-invalid"
                            id="statusNote"
-                           placeholder="Введите что-то"
-                           required/>
+                           placeholder="Введите дополнительную информацию"/>
                     <small th:if="${#fields.hasErrors('statusNote')}" th:errors="*{statusNote}"
                            class="text-danger"></small>
                 </label>
 
                 <label for="additionalInfo">
-                    Другие контакты
+                    Телеграм id
                     <input th:field="*{additionalInfo}"
                            th:errorclass="is-invalid"
                            id="additionalInfo"
-                           placeholder="Введите другие контакты"
-                           required/>
+                           placeholder="Введите id(без @)"/>
                     <small th:if="${#fields.hasErrors('additionalInfo')}" th:errors="*{additionalInfo}"
                            class="text-danger"></small>
                 </label>

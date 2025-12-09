@@ -13,6 +13,9 @@
         <ul>
             <li><a href="/">Главная</a></li>
             <li><a href="/employees/all">Сотрудники</a></li>
+            <li sec:authorize="hasRole('ADMIN')">
+            <a href="/employees/add">Добавить сотрудника</a>
+            </li>
 <!--            <li sec:authorize="hasRole('MODERATOR')"><a href="/moderator/employees/all">Сотрудники моего отдела</a></li>-->
 <!--            <li sec:authorize="hasRole('ADMIN')"><a href="/admin/employees/all">Сотрудники</a></li>-->
             <li sec:authorize="isAuthenticated()">
