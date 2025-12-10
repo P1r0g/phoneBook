@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/head"/>
+<body>
+<div th:replace="fragments/navbar"></div>
+<main class="container">
+    <hgroup>
+        <h1>Все пользователи</h1>
+    </hgroup>
+
+    <div id="resultsContainer">
+        <div style="
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 20px;
+        ">
+            <div th:each="user : ${allUsers}" class="card" style="margin-bottom: 0;">
+                <h3><strong th:text="${user.username}"></strong></h3>
+                <h4><strong th:text="${user.departmentShortName}"></strong></h4>
+                <p>Роль: <strong th:text="${user.role}"></strong></p>
+                
+                <div>
+                    <form th:action="@{/moderators/update/{id}(id=${user.id})}"
+                        th:method="get">
+                        <button type="submit" class="primary">Изменить</button>
+                    </form>
+                </div>
+                <div>
+                    <form th:action="@{/moderators/delete/{id}(id=${user.id})}"
+                          th:method="delete"
+                          onsubmit="return confirm('Вы уверены, что хотите удалить этого пользователя?')">
+                        <button type="submit" class="secondary">Удалить пользователя</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <p th:if="${#lists.isEmpty(allUsers)}" class="text-center">
+            <em>Пользователи не найдены. Добавьте новых пользователей, чтобы начать!</em>
+        </p>
+    </div>
+</main>
+
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

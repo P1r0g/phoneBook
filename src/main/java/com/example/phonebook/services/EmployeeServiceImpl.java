@@ -52,16 +52,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.info("Сотрудник успешно добавлен: {} {} {}", employeeDto.getLastName(), employeeDto.getMiddleName(), employeeDto.getFirstName());
     }
 
-    @Override
-    @Cacheable(value = "employees", key = "'all'")
-    public List<ShowEmployeeDto> allEmployees() {
-        log.debug("Получение списка всех сотрудников");
-        List<ShowEmployeeDto> employees = employeeRepository.findAllOrderedByLastName().stream()
-                .map(employee -> mapper.map(employee, ShowEmployeeDto.class))
-                .collect(Collectors.toList());
-        log.debug("Найдено сотрудников: {}", employees.size());
-        return employees;
-        }
+        @Override
+        @Cacheable(value = "employees", key = "'all'")
+        public List<ShowEmployeeDto> allEmployees() {
+            log.debug("Получение списка всех сотрудников");
+            List<ShowEmployeeDto> employees = employeeRepository.findAllOrderedByLastName().stream()
+                    .map(employee -> mapper.map(employee, ShowEmployeeDto.class))
+                    .collect(Collectors.toList());
+            log.debug("Найдено сотрудников: {}", employees.size());
+            return employees;
+            }
     
     @Override
     public List<ShowEmployeeDto> findEmployeesByDepartment(Long departmentId) {

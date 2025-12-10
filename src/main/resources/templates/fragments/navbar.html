@@ -17,7 +17,8 @@
             <a href="/employees/add">Добавить сотрудника</a>
             </li>
 <!--            <li sec:authorize="hasRole('MODERATOR')"><a href="/moderator/employees/all">Сотрудники моего отдела</a></li>-->
-<!--            <li sec:authorize="hasRole('ADMIN')"><a href="/admin/employees/all">Сотрудники</a></li>-->
+           <li sec:authorize="hasRole('ADMIN')"><a href="/moderators/all">Пользователи</a></li>
+           <li sec:authorize="hasRole('ADMIN')"><a href="/users/register">Добавить пользователя</a></li>
             <li sec:authorize="isAuthenticated()">
                 <a href="/users/profile" role="button" class="secondary outline">
                     <th:block sec:authentication="name"></th:block>
