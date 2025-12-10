@@ -11,12 +11,12 @@
     <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
         <div style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
             <span style="font-weight: bold; margin-right: 5px;">Отдел:</span>
-            <a href="/employees/all" 
+            <a href="/employees/all"
                th:class="${selectedDepartment == null} ? 'department-btn active' : 'department-btn'"
                style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">
                 Все
             </a>
-            
+
             <a th:each="dept : ${departments}"
                th:href="@{/employees/all?department={id}(id=${dept.id})}"
                th:class="${selectedDepartment != null and selectedDepartment == dept.id} ? 'department-btn active' : 'department-btn'"
@@ -24,7 +24,15 @@
                style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">
             </a>
         </div>
+
+        <div sec:authorize="hasAnyRole('ADMIN','MODERATOR')">
+            <a href="/employees/add" class="primary"
+               style="padding: 5px 10px; border-radius: 4px; background-color: #007bff; color: white; text-decoration: none; font-size: 0.9rem;">
+                Добавить сотрудника
+            </a>
+        </div>
     </div>
+
         <form method="get" action="/employees/all" id="searchForm" style="flex-grow: 1">
             <div style="display: flex; gap: 5px;">
                 <input type="search"
@@ -36,8 +44,8 @@
                        id="searchInput"
                        autocomplete="off"
                        style="flex-grow: 1;">
-                <input type="hidden" 
-                       name="department" 
+                <input type="hidden"
+                       name="department"
                        th:value="${selectedDepartment}"
                        id="departmentHidden">
             </div>
@@ -54,20 +62,20 @@
                 <h3><strong th:text="${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}"></strong></h3>
                 <h4><strong th:text="${e.departmentShortName}"></strong></h4>
                 <p th:if="${e.workPhone}">
-                    Рабочий телефон: 
-                    <a th:href="'tel:' + ${#strings.replace(e.workPhone, ' ', '')}" 
+                    Рабочий телефон:
+                    <a th:href="'tel:' + ${#strings.replace(e.workPhone, ' ', '')}"
                     th:text="${e.workPhone}"
                     style="font-weight: bold; text-decoration: none;"></a>
                 </p>
                 <p th:if="${e.personalPhone}">
-                    Личный телефон: 
-                    <a th:href="'tel:' + ${#strings.replace(e.personalPhone, ' ', '')}" 
+                    Личный телефон:
+                    <a th:href="'tel:' + ${#strings.replace(e.personalPhone, ' ', '')}"
                     th:text="${e.personalPhone}"
                     style="font-weight: bold; text-decoration: none;"></a>
                 </p>
                 <p th:if="${e.email}">
                     Email:
-                    <a th:href="'mailto:' + ${e.email}" 
+                    <a th:href="'mailto:' + ${e.email}"
                     th:text="${e.email}"
                     style="font-weight: bold; text-decoration: none;"></a>
                 </p>
@@ -77,7 +85,7 @@
                 </p>
                 <p th:if="${e.additionalInfo}">
                     Telegram:
-                    <a th:href="'https://t.me/' + ${e.additionalInfo}" 
+                    <a th:href="'https://t.me/' + ${e.additionalInfo}"
                     th:text="'@' + ${e.additionalInfo}"
                     style="font-weight: bold; text-decoration: none;"></a>
                 </p>
@@ -85,7 +93,7 @@
                     Дополнительная информация:
                     <span th:text="${e.statusNote}" style="font-weight: bold;"></span>
                 </p>
-                
+
                 <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
                     <form th:action="@{/employees/update/{name}(name=${e.lastName + ' ' + e.firstName + ' ' + e.middleName})}"
                         th:method="get">
@@ -99,11 +107,16 @@
                         <button type="submit" class="secondary">Удалить сотрудника</button>
                     </form>
                 </div>
+                <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+                    <form th:action="@{/employees/promote/{name}(name=${e.lastName + ' ' + e.firstName + ' ' + e.middleName})}" th:method="post">
+                        <button type="submit" class="secondary">Повысить до модератора</button>
+                    </form>
+                </div>
             </div>
         </div>
-        
+
         <p th:if="${#lists.isEmpty(allEmployees)}" class="text-center">
-            <em>Сотрудники не найдены. 
+            <em>Сотрудники не найдены.
                 <span th:if="${selectedDepartment != null}">
                     В выбранном отделе нет сотрудников.
                 </span>
@@ -128,25 +141,25 @@
         searchInput.addEventListener('input', function() {
             const cursorPosition = this.selectionStart;
             const searchValue = this.value;
-            
+
             clearTimeout(debounceTimer);
-            
+
             debounceTimer = setTimeout(() => {
                 // Получаем текущий URL и параметры
                 const url = new URL(window.location.origin + '/employees/all');
-                
+
                 // Добавляем параметр поиска
                 if (searchValue.trim() !== '') {
                     url.searchParams.set('search', searchValue);
                 }
-                
+
                 // Добавляем параметр отдела из скрытого поля
                 if (departmentHidden && departmentHidden.value) {
                     url.searchParams.set('department', departmentHidden.value);
                 }
-                
+
                 console.log('Fetching URL:', url.toString());
-                
+
                 fetch(url, {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest'
@@ -161,13 +174,13 @@
                 .then(html => {
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
-                    
+
                     const newResultsContainer = doc.getElementById('resultsContainer');
-                    
+
                     if (newResultsContainer) {
                         resultsContainer.innerHTML = newResultsContainer.innerHTML;
                     }
-                    
+
                     searchInput.focus();
                     searchInput.setSelectionRange(cursorPosition, cursorPosition);
                 })
@@ -181,7 +194,7 @@
             if (e.key === 'Enter') {
                 e.preventDefault();
                 clearTimeout(debounceTimer);
-                
+
                 const event = new Event('input', {
                     bubbles: true,
                     cancelable: true,
@@ -189,9 +202,9 @@
                 this.dispatchEvent(event);
             }
         });
-        
+
         searchInput.focus();
-        
+
         // Обновляем placeholder при выборе отдела
         function updatePlaceholder() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -202,7 +215,7 @@
                 searchInput.placeholder = 'Поиск сотрудников...';
             }
         }
-        
+
         updatePlaceholder();
     });
 </script>

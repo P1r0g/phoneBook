@@ -1,4 +1,6 @@
-<nav xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<nav xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+     xmlns:th="http://www.thymeleaf.org">
+
     <div class="container">
         <ul>
             <li>
@@ -10,27 +12,50 @@
                 </strong>
             </li>
         </ul>
+
         <ul>
-            <li><a href="/">Главная</a></li>
-            <li><a href="/employees/all">Сотрудники</a></li>
-            <li sec:authorize="hasRole('ADMIN')">
-            <a href="/employees/add">Добавить сотрудника</a>
+            <li sec:authorize="!isAuthenticated()"><a href="/">Главная</a></li>
+            <li sec:authorize="!isAuthenticated()"><a href="/employees/all">Сотрудники</a></li>
+            <li sec:authorize="!isAuthenticated()">
+                <a href="/users/login" role="button" class="secondary">Вход</a>
             </li>
-<!--            <li sec:authorize="hasRole('MODERATOR')"><a href="/moderator/employees/all">Сотрудники моего отдела</a></li>-->
-           <li sec:authorize="hasRole('ADMIN')"><a href="/moderators/all">Пользователи</a></li>
-           <li sec:authorize="hasRole('ADMIN')"><a href="/users/register">Добавить пользователя</a></li>
-            <li sec:authorize="isAuthenticated()">
-                <a href="/users/profile" role="button" class="secondary outline">
-                    <th:block sec:authentication="name"></th:block>
-                </a>
+
+            <li sec:authorize="hasRole('MODERATOR')"><a href="/">Главная</a></li>
+            <li sec:authorize="hasRole('MODERATOR')">
+                <a href="/moderator/employees/my-department">Сотрудники моего отдела</a>
             </li>
-            <li sec:authorize="isAuthenticated()">
+            <li sec:authorize="hasRole('MODERATOR')">
+                <a href="/moderator/employees/all">Все сотрудники отдела (удалённые включительно)</a>
+            </li>
+            <li sec:authorize="hasRole('MODERATOR')">
+                <span style="color: #ffffff; font-weight: 600;">
+                    <span sec:authentication="name"></span>
+                </span>
+            </li>
+            <li sec:authorize="hasRole('MODERATOR')">
                 <form th:method="post" th:action="@{/users/logout}" style="margin: 0;">
                     <button type="submit" class="contrast outline">Выйти</button>
                 </form>
             </li>
-            <!-- <li sec:authorize="!isAuthenticated()"><a href="/users/register" role="button">Регистрация</a></li>
-            <li sec:authorize="!isAuthenticated()"><a href="/users/login" role="button" class="secondary">Вход</a></li> -->
+
+            <li sec:authorize="hasRole('ADMIN')"><a href="/">Главная</a></li>
+            <li sec:authorize="hasRole('ADMIN')"><a href="/employees/all">Сотрудники</a></li>
+            <li sec:authorize="hasRole('ADMIN')">
+                <a href="/employees/all-with-deleted">Все сотрудники (включая удалённых)</a>
+            </li>
+            <li sec:authorize="hasRole('ADMIN')">
+                <a href="/moderators/all">Модераторы</a>
+            </li>
+            <li sec:authorize="hasRole('ADMIN')">
+                <span style="color: #ffffff; font-weight: 600;">
+                    <span sec:authentication="name"></span>
+                </span>
+            </li>
+            <li sec:authorize="hasRole('ADMIN')">
+                <form th:method="post" th:action="@{/users/logout}" style="margin: 0;">
+                    <button type="submit" class="contrast outline">Выйти</button>
+                </form>
+            </li>
         </ul>
     </div>
 </nav>

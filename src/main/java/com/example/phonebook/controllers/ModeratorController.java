@@ -21,19 +21,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 
 
 @Slf4j
 @Controller
 @RequestMapping("/moderators")
-public class UserController {
+public class ModeratorController {
 
     private final UserService userService;
     private final DepartmentService departmentService;
 
-    public UserController(UserService userService, DepartmentService departmentService) {
+    public ModeratorController(UserService userService, DepartmentService departmentService) {
         this.userService = userService;
         this.departmentService = departmentService;
         log.info("UserController заупущен");

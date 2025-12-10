@@ -8,6 +8,13 @@
         <h1>Все пользователи</h1>
     </hgroup>
 
+    <!-- Кнопка добавления модератора -->
+    <div style="margin-bottom: 20px;">
+        <form th:action="@{/moderators/add}" th:method="get">
+            <button type="submit" class="primary">Добавить модератора</button>
+        </form>
+    </div>
+
     <div id="resultsContainer">
         <div style="
             display: grid;
@@ -19,13 +26,22 @@
                 <h3><strong th:text="${user.username}"></strong></h3>
                 <h4><strong th:text="${user.departmentShortName}"></strong></h4>
                 <p>Роль: <strong th:text="${user.role}"></strong></p>
-                
-                <div>
+
+                <div style="margin-bottom: 5px;">
                     <form th:action="@{/moderators/update/{id}(id=${user.id})}"
-                        th:method="get">
+                          th:method="get">
                         <button type="submit" class="primary">Изменить</button>
                     </form>
                 </div>
+
+                <div style="margin-bottom: 5px;">
+                    <form th:action="@{/moderators/demote/{id}(id=${user.id})}"
+                          th:method="post"
+                          onsubmit="return confirm('Вы уверены, что хотите понизить этого пользователя до сотрудника?')">
+                        <button type="submit" class="secondary">Понизить до сотрудника</button>
+                    </form>
+                </div>
+
                 <div>
                     <form th:action="@{/moderators/delete/{id}(id=${user.id})}"
                           th:method="delete"
@@ -35,7 +51,7 @@
                 </div>
             </div>
         </div>
-        
+
         <p th:if="${#lists.isEmpty(allUsers)}" class="text-center">
             <em>Пользователи не найдены. Добавьте новых пользователей, чтобы начать!</em>
         </p>
