@@ -1,6 +1,5 @@
 package com.example.phonebook.config;
 
-
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -17,4 +16,3 @@ public class BeanConfiguration {
         return new ModelMapper();
     }
 }
-

@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class UpdateEmployeeDto {
-
     @NotNull(message = "Выберите подразделение!")
     private Long departmentId;
 
@@ -21,30 +20,65 @@ public class UpdateEmployeeDto {
     private String personalPhone;
 
     @Email(message = "Некорректный email")
+    @NotEmpty(message = "Email обязателен")
     private String email;
 
     private String statusNote;
     private String additionalInfo;
 
-    // getters / setters
-    public Long getDepartmentId() { return departmentId; }
-    public void setDepartmentId(Long departmentId) { this.departmentId = departmentId; }
+    public Long getDepartmentId() {
+        return departmentId;
+    }
 
-    public String getOfficeNumber() { return officeNumber; }
-    public void setOfficeNumber(String officeNumber) { this.officeNumber = officeNumber; }
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
+    }
 
-    public String getWorkPhone() { return workPhone; }
-    public void setWorkPhone(String workPhone) { this.workPhone = workPhone; }
+    public String getOfficeNumber() {
+        return officeNumber;
+    }
 
-    public String getPersonalPhone() { return personalPhone; }
-    public void setPersonalPhone(String personalPhone) { this.personalPhone = personalPhone; }
+    public void setOfficeNumber(String officeNumber) {
+        this.officeNumber = officeNumber;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getWorkPhone() {
+        return workPhone;
+    }
 
-    public String getStatusNote() { return statusNote; }
-    public void setStatusNote(String statusNote) { this.statusNote = (statusNote != null && statusNote.trim().isEmpty()) ? null : statusNote; }
+    public void setWorkPhone(String workPhone) {
+        this.workPhone = workPhone;
+    }
 
-    public String getAdditionalInfo() { return additionalInfo; }
-    public void setAdditionalInfo(String additionalInfo) { this.additionalInfo = (additionalInfo != null && additionalInfo.trim().isEmpty()) ? null : additionalInfo; }
+    public String getPersonalPhone() {
+        return personalPhone;
+    }
+
+    public void setPersonalPhone(String personalPhone) {
+        this.personalPhone = personalPhone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getStatusNote() {
+        return statusNote;
+    }
+
+    public void setStatusNote(String statusNote) {
+        this.statusNote = statusNote;
+    }
+
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
+    }
 }

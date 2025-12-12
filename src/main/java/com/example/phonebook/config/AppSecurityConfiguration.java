@@ -1,6 +1,7 @@
 package com.example.phonebook.config;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +14,10 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 
-@Slf4j
 @Configuration
 public class AppSecurityConfiguration {
+
+    private static final Logger log = LoggerFactory.getLogger(AppSecurityConfiguration.class);
 
     public AppSecurityConfiguration() {
         log.info("AppSecurityConfiguration инициализирована");
@@ -28,12 +30,13 @@ public class AppSecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/favicon.ico", "/error", "/logo.png").permitAll()
-                        .requestMatchers("/", "/users/login", "/users/register", "/users/login-error", "/employees/all").permitAll()
+                        .requestMatchers("/", "/users/login", "/users/register", "/users/login-error").permitAll()
+                        .requestMatchers("/employees/all").permitAll()
                         .requestMatchers("/actuator/").permitAll()
                         .requestMatchers("/users/profile").authenticated()
-                        .requestMatchers("/employees/add", "/employees/employee-delete/*")
+                        .requestMatchers("/employees/add", "/employees/update/**", "/employees/delete/**")
                         .hasAnyAuthority("ROLE_MODERATOR", "ROLE_ADMIN")
-                        .requestMatchers("/companies/add", "/companies/company-delete/*")
+                        .requestMatchers("/admin/**", "/moderators/**", "/users/register")
                         .hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )

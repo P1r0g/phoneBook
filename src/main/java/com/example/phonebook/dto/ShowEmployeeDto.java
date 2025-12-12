@@ -3,6 +3,7 @@ package com.example.phonebook.dto;
 import java.io.Serializable;
 
 public class ShowEmployeeDto implements Serializable {
+    private Long id;
     private String firstName;
     private String lastName;
     private String middleName;
@@ -13,6 +14,17 @@ public class ShowEmployeeDto implements Serializable {
     private String statusNote;
     private String additionalInfo;
     private String departmentShortName;
+    private boolean active;
+    private boolean canEdit = false;
+    private boolean canDelete = false;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -89,8 +101,32 @@ public class ShowEmployeeDto implements Serializable {
     public String getDepartmentShortName() {
         return departmentShortName;
     }
-    
+
     public void setDepartmentShortName(String departmentShortName) {
         this.departmentShortName = departmentShortName;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isCanEdit() {
+        return canEdit;
+    }
+
+    public void setCanEdit(boolean canEdit) {
+        this.canEdit = canEdit;
+    }
+
+    public boolean isCanDelete() {
+        return canDelete;
+    }
+
+    public void setCanDelete(boolean canDelete) {
+        this.canDelete = canDelete;
     }
 }

@@ -87,13 +87,13 @@
                 </p>
                 
                 <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
-                    <form th:action="@{/employees/update/{name}(name=${e.lastName + ' ' + e.firstName + ' ' + e.middleName})}"
+                    <form th:action="@{/employees/update/{id}(id = ${e.id})}"
                         th:method="get">
                         <button type="submit" class="primary">Изменить</button>
                     </form>
                 </div>
                 <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
-                    <form th:action="@{/employees/employee-delete/{name}(name=${e.lastName + ' ' + e.firstName + ' ' + e.middleName})}"
+                    <form th:action="@{/employees/employee-delete/{id}(id = ${e.id})}"
                           th:method="delete"
                           onsubmit="return confirm('Вы уверены, что хотите удалить этого сотрудника?')">
                         <button type="submit" class="secondary">Удалить сотрудника</button>

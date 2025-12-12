@@ -1,27 +1,21 @@
 package com.example.phonebook.services;
 
-import java.util.List;
-
 import com.example.phonebook.dto.AddEmployeeDto;
 import com.example.phonebook.dto.ShowEmployeeDto;
 import com.example.phonebook.dto.UpdateEmployeeDto;
 import com.example.phonebook.models.entities.Employee;
 
+import java.util.List;
+
 public interface EmployeeService {
-    
     void addEmployee(AddEmployeeDto employeeDto);
-
     List<ShowEmployeeDto> allEmployees();
-
     List<ShowEmployeeDto> searchEmployees(String searchTerm);
-
-    Employee findByFullName(String fullName);
-    
+    Employee findById(Long id);
     List<ShowEmployeeDto> findEmployeesByDepartment(Long departmentId);
-
-    void updateEmployee(String fullName, UpdateEmployeeDto dto);
-    
+    void updateEmployee(Long id, UpdateEmployeeDto dto);
     List<ShowEmployeeDto> searchEmployeesInDepartment(String searchTerm, Long departmentId);
-
-    void fireEmployee(String employeeFullName);
+    void deactivateEmployee(Long id);
+    List<ShowEmployeeDto> allInactiveEmployees();
+    void activateEmployee(Long id);
 }

@@ -5,6 +5,8 @@ import com.example.phonebook.models.entities.UserAccount;
 import com.example.phonebook.models.enums.UserRole;
 import com.example.phonebook.repositories.DepartmentRepository;
 import com.example.phonebook.repositories.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,11 +16,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AuthServiceImpl implements AuthService {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
+
     private final UserRepository userRepository;
     private final DepartmentRepository departmentRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthServiceImpl(UserRepository userRepository,DepartmentRepository departmentRepository, PasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(UserRepository userRepository,
+                           DepartmentRepository departmentRepository,
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.departmentRepository = departmentRepository;
         this.passwordEncoder = passwordEncoder;
@@ -28,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public void register(UserRegistrationDto registrationDTO) {
         if (!registrationDTO.getPassword().equals(registrationDTO.getConfirmPassword())) {
-            throw new RuntimeException("passwords.match");
+            throw new RuntimeException("Пароли не совпадают");
         }
 
         UserAccount user = new UserAccount(
@@ -41,7 +47,6 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
     }
-
 
     @Override
     public UserAccount getUser(String username) {

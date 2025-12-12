@@ -1,4 +1,5 @@
 package com.example.phonebook.services;
+
 import com.example.phonebook.models.entities.UserAccount;
 import com.example.phonebook.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,8 +24,8 @@ public class AppUserDetailsService implements UserDetailsService {
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
-                .password(user.getPassword())  // <-- важно!
-                .authorities("ROLE_" + user.getRole().name()) // <-- правильно!
+                .password(user.getPassword())
+                .authorities("ROLE_" + user.getRole().name())
                 .build();
     }
 }
