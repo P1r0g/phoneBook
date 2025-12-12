@@ -2,6 +2,7 @@ package com.example.phonebook.controllers;
 
 import com.example.phonebook.dto.AddEmployeeDto;
 import com.example.phonebook.dto.ShowDepartmentInfoDto;
+import com.example.phonebook.dto.ShowEmployeeDto;
 import com.example.phonebook.dto.UpdateEmployeeDto;
 import com.example.phonebook.models.entities.Employee;
 import com.example.phonebook.services.DepartmentService;
@@ -11,6 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -63,10 +68,15 @@ public class EmployeeController {
 
 
     @GetMapping("/all")
-public String showAllEmployees(@RequestParam(required = false) String search, 
-                               @RequestParam(required = false) Long department, 
-                               Model model) {
-
+public String showAllEmployees(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "9") int size,
+        @RequestParam(defaultValue = "lastName") String sortBy,
+        @RequestParam(required = false) String search,
+        @RequestParam(required = false) Long department, 
+        Model model) {
+    
+    log.debug("Отображение списка сотрудников: страница {}, размер {}, сортировка {}, поиск {}");
     List<ShowDepartmentInfoDto> departments = departmentService.allDepartments();
     model.addAttribute("departments", departments);
     
@@ -100,7 +110,12 @@ public String showAllEmployees(@RequestParam(required = false) String search,
         model.addAttribute("selectedDepartmentName", selectedDepartmentName);
         
     } else {
-        model.addAttribute("allEmployees", employeeService.allEmployees());
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        Page<ShowEmployeeDto> employeePage = employeeService.allEmployeesPaginated(pageable);
+        model.addAttribute("allEmployees", employeePage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", employeePage.getTotalPages());
+        model.addAttribute("totalItems", employeePage.getTotalElements());
     }
     
     return "employee-all";

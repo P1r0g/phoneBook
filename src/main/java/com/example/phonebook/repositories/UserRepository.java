@@ -43,8 +43,9 @@ public interface UserRepository extends JpaRepository<UserAccount, Long> {
 
     @Query("SELECT u FROM UserAccount u WHERE " +
            "CAST(u.id AS string) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(u.username) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "LOWER(u.role) LIKE LOWER(CONCAT('%', :searchTerm, '%'))" +
+           "LOWER(u.username) LIKE LOWER(CONCAT('%', :searchTerm, '%')) AND " +
+           "u.role IN ('USER', 'MODERATOR') " +
+        //    "LOWER(u.role) LIKE LOWER(CONCAT('%', :searchTerm, '%'))" +
             "ORDER BY u.username ASC")
     List<UserAccount> searchUsers(@Param("searchTerm") String searchTerm);
     

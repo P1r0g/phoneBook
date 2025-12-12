@@ -2,6 +2,9 @@ package com.example.phonebook.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.example.phonebook.dto.AddEmployeeDto;
 import com.example.phonebook.dto.ShowEmployeeDto;
 import com.example.phonebook.dto.UpdateEmployeeDto;
@@ -12,6 +15,8 @@ public interface EmployeeService {
     void addEmployee(AddEmployeeDto employeeDto);
 
     List<ShowEmployeeDto> allEmployees();
+
+    Page<ShowEmployeeDto> allEmployeesPaginated(Pageable pageable);
 
     List<ShowEmployeeDto> searchEmployees(String searchTerm);
 

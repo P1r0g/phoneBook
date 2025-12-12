@@ -7,6 +7,8 @@ import com.example.phonebook.dto.UpdateEmployeeDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,16 +54,24 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.info("Сотрудник успешно добавлен: {} {} {}", employeeDto.getLastName(), employeeDto.getMiddleName(), employeeDto.getFirstName());
     }
 
-        @Override
-        @Cacheable(value = "employees", key = "'all'")
-        public List<ShowEmployeeDto> allEmployees() {
-            log.debug("Получение списка всех сотрудников");
-            List<ShowEmployeeDto> employees = employeeRepository.findAllOrderedByLastName().stream()
-                    .map(employee -> mapper.map(employee, ShowEmployeeDto.class))
-                    .collect(Collectors.toList());
-            log.debug("Найдено сотрудников: {}", employees.size());
-            return employees;
-            }
+    @Override
+    @Cacheable(value = "employees", key = "'all'")
+    public List<ShowEmployeeDto> allEmployees() {
+        log.debug("Получение списка всех сотрудников");
+        List<ShowEmployeeDto> employees = employeeRepository.findAllOrderedByLastName().stream()
+                .map(employee -> mapper.map(employee, ShowEmployeeDto.class))
+                .collect(Collectors.toList());
+        log.debug("Найдено сотрудников: {}", employees.size());
+        return employees;
+    }
+
+    @Override
+    public Page<ShowEmployeeDto> allEmployeesPaginated(Pageable pageable) {
+        log.debug("Получение сотрудников с пагинацией: страница {}, размер {}",
+                pageable.getPageNumber(), pageable.getPageSize());
+        return employeeRepository.findAll(pageable)
+                .map(employee -> mapper.map(employee, ShowEmployeeDto.class));
+    }
     
     @Override
     public List<ShowEmployeeDto> findEmployeesByDepartment(Long departmentId) {

@@ -101,7 +101,19 @@
                 </div>
             </div>
         </div>
-        
+        <nav th:if="${totalPages != null && totalPages > 1}" aria-label="Pagination">
+        <ul style="display: flex; justify-content: center; list-style: none; padding: 0;">
+            <li th:if="${currentPage > 0}">
+                <a th:href="@{/employees/all(page=${currentPage - 1}, size=10)}" role="button" class="outline">Назад</a>
+            </li>
+            <li style="margin: 0 1rem; align-self: center;">
+                <span>Страница <strong th:text="${currentPage + 1}"></strong> из <strong th:text="${totalPages}"></strong></span>
+            </li>
+            <li th:if="${currentPage + 1 < totalPages}">
+                <a th:href="@{/employees/all(page=${currentPage + 1}, size=10)}" role="button" class="outline">Вперед</a>
+            </li>
+        </ul>
+        </nav>
         <p th:if="${#lists.isEmpty(allEmployees)}" class="text-center">
             <em>Сотрудники не найдены. 
                 <span th:if="${selectedDepartment != null}">
