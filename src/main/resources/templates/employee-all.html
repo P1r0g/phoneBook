@@ -93,8 +93,8 @@
                     </form>
                 </div>
                 <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
-                    <form th:action="@{/employees/employee-delete/{id}(id = ${e.id})}"
-                          th:method="delete"
+                    <form th:action="@{/employees/delete/{id}(id = ${e.id})}"
+                          th:method="post"
                           onsubmit="return confirm('Вы уверены, что хотите удалить этого сотрудника?')">
                         <button type="submit" class="secondary">Удалить сотрудника</button>
                     </form>

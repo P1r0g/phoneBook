@@ -39,12 +39,11 @@ public class AuthServiceImpl implements AuthService {
 
         UserAccount user = new UserAccount(
                 registrationDTO.getUsername(),
-                passwordEncoder.encode(registrationDTO.getPassword()),
-                registrationDTO.getRole()
+                passwordEncoder.encode(registrationDTO.getPassword())
         );
 
         user.setDepartment(departmentRepository.findById(registrationDTO.getDepartmentId()).orElse(null));
-
+        user.setRole(UserRole.MODERATOR);
         userRepository.save(user);
     }
 

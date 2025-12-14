@@ -69,6 +69,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "WHERE e.id = :id")
     void updateEmployeeById(
             @Param("id") Long id,
+            @Param("firstName") String firstName,
+            @Param("lastName") String lastName,
+            @Param("middleName") String middlenName,
             @Param("departmentId") Long departmentId,
             @Param("officeNumber") String officeNumber,
             @Param("workPhone") String workPhone,

@@ -190,7 +190,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Department department = departmentRepository.findById(dto.getDepartmentId())
                 .orElseThrow(() -> new RuntimeException("Отдел не найден"));
-
+        employee.setFirstName(dto.getFirstName());
+        employee.setLastName(dto.getLastName());
+        employee.setMiddleName(dto.getMiddleName());
         employee.setDepartment(department);
         employee.setOfficeNumber(dto.getOfficeNumber());
         employee.setWorkPhone(dto.getWorkPhone());
