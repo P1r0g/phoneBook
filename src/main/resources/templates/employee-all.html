@@ -104,23 +104,23 @@
         <nav th:if="${totalPages != null && totalPages > 1}" aria-label="Pagination">
         <ul style="display: flex; justify-content: center; list-style: none; padding: 0;">
             <li th:if="${currentPage > 0}">
-                <a th:href="@{/employees/all(page=${currentPage - 1}, size=10)}" role="button" class="outline">Назад</a>
+                <a th:href="@{/employees/all(page=${currentPage - 1}, size=9)}" role="button" class="outline">Назад</a>
             </li>
             <li style="margin: 0 1rem; align-self: center;">
                 <span>Страница <strong th:text="${currentPage + 1}"></strong> из <strong th:text="${totalPages}"></strong></span>
             </li>
             <li th:if="${currentPage + 1 < totalPages}">
-                <a th:href="@{/employees/all(page=${currentPage + 1}, size=10)}" role="button" class="outline">Вперед</a>
+                <a th:href="@{/employees/all(page=${currentPage + 1}, size=9)}" role="button" class="outline">Вперед</a>
             </li>
         </ul>
         </nav>
         <p th:if="${#lists.isEmpty(allEmployees)}" class="text-center">
-            <em>Сотрудники не найдены. 
+            <em> Введите запрос в поиск или выберите отдел.
                 <span th:if="${selectedDepartment != null}">
                     В выбранном отделе нет сотрудников.
                 </span>
                 <span th:unless="${selectedDepartment != null}">
-                    Добавьте новых сотрудников, чтобы начать!
+                    
                 </span>
             </em>
         </p>
@@ -130,93 +130,83 @@
 <footer th:replace="fragments/footer"></footer>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('searchInput');
-        const resultsContainer = document.getElementById('resultsContainer');
-        const searchForm = document.getElementById('searchForm');
-        const departmentHidden = document.getElementById('departmentHidden');
-        let debounceTimer;
+   document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const departmentHidden = document.getElementById('departmentHidden');
+    let debounceTimer;
 
-        searchInput.addEventListener('input', function() {
-            const cursorPosition = this.selectionStart;
-            const searchValue = this.value;
-            
-            clearTimeout(debounceTimer);
-            
-            debounceTimer = setTimeout(() => {
-                // Получаем текущий URL и параметры
-                const url = new URL(window.location.origin + '/employees/all');
-                
-                // Добавляем параметр поиска
-                if (searchValue.trim() !== '') {
-                    url.searchParams.set('search', searchValue);
-                }
-                
-                // Добавляем параметр отдела из скрытого поля
-                if (departmentHidden && departmentHidden.value) {
-                    url.searchParams.set('department', departmentHidden.value);
-                }
-                
-                console.log('Fetching URL:', url.toString());
-                
-                fetch(url, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.text();
-                })
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    
-                    const newResultsContainer = doc.getElementById('resultsContainer');
-                    
-                    if (newResultsContainer) {
-                        resultsContainer.innerHTML = newResultsContainer.innerHTML;
-                    }
-                    
-                    searchInput.focus();
-                    searchInput.setSelectionRange(cursorPosition, cursorPosition);
-                })
-                .catch(error => {
-                    console.error('Ошибка при поиске:', error);
-                });
-            }, 300);
-        });
-
-        searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                clearTimeout(debounceTimer);
-                
-                const event = new Event('input', {
-                    bubbles: true,
-                    cancelable: true,
-                });
-                this.dispatchEvent(event);
-            }
-        });
+    function performSearch() {
+        const cursorPosition = searchInput.selectionStart;
+        const searchValue = searchInput.value;
         
-        searchInput.focus();
+        const url = new URL(window.location.origin + '/employees/all');
         
-        // Обновляем placeholder при выборе отдела
-        function updatePlaceholder() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const department = urlParams.get('department');
-            if (department) {
-                searchInput.placeholder = 'Поиск в отделе...';
-            } else {
-                searchInput.placeholder = 'Поиск сотрудников...';
-            }
+        if (searchValue.trim() !== '') {
+            url.searchParams.set('search', searchValue);
         }
         
-        updatePlaceholder();
+        if (departmentHidden && departmentHidden.value) {
+            url.searchParams.set('department', departmentHidden.value);
+        }
+        
+        console.log('Fetching URL:', url.toString());
+        
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            const newResultsContainer = doc.getElementById('resultsContainer');
+            
+            if (newResultsContainer) {
+                resultsContainer.innerHTML = newResultsContainer.innerHTML;
+            }
+            
+            searchInput.focus();
+            searchInput.setSelectionRange(cursorPosition, cursorPosition);
+        })
+        .catch(error => {
+            console.error('Ошибка при поиске:', error);
+        });
+    }
+
+    // Поиск при паузе ввода (0.5 секунды)
+    searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        
+        debounceTimer = setTimeout(() => {
+            performSearch();
+        }, 500); // 1.5 секунды паузы
     });
+
+    // Поиск при нажатии Enter
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            clearTimeout(debounceTimer);
+            performSearch();
+        }
+    });
+    searchInput.addEventListener('input', function() {
+        if (this.value.trim() === '') {
+            performSearch(); // Для очистки результатов при пустом поле
+        }
+    });
+
+    searchInput.focus();
+    updatePlaceholder();
+});
 </script>
 </body>
 </html>

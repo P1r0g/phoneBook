@@ -110,12 +110,15 @@ public String showAllEmployees(
         model.addAttribute("selectedDepartmentName", selectedDepartmentName);
         
     } else {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
-        Page<ShowEmployeeDto> employeePage = employeeService.allEmployeesPaginated(pageable);
-        model.addAttribute("allEmployees", employeePage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", employeePage.getTotalPages());
-        model.addAttribute("totalItems", employeePage.getTotalElements());
+            model.addAttribute("allEmployees", employeeService.searchEmployees(search));
+            model.addAttribute("search", search);
+            model.addAttribute("selectedDepartment", department);
+        // Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        // Page<ShowEmployeeDto> employeePage = employeeService.allEmployeesPaginated(pageable);
+        // model.addAttribute("allEmployees", employeePage.getContent());
+        // model.addAttribute("currentPage", page);
+        // model.addAttribute("totalPages", employeePage.getTotalPages());
+        // model.addAttribute("totalItems", employeePage.getTotalElements());
     }
     
     return "employee-all";
