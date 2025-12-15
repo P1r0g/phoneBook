@@ -43,7 +43,15 @@ public class EmployeeController {
     @GetMapping("/add")
     public String addEmployeeForm(Model model) {
         if (!model.containsAttribute("employeeModel")) {
-            model.addAttribute("employeeModel", new AddEmployeeDto());
+            boolean isModerator = employeeService.isCurrentUserModerator();
+            Long userDepartmentId = employeeService.getCurrentUserDepartmentId();
+            AddEmployeeDto addEmployeeDto = new AddEmployeeDto();
+            if (isModerator) {
+                addEmployeeDto.setDepartmentId(userDepartmentId);
+            }
+            model.addAttribute("isModerator", isModerator);
+            model.addAttribute("userDepartmentId", userDepartmentId);
+            model.addAttribute("employeeModel", addEmployeeDto);
         }
 
         model.addAttribute("departments", departmentService.allDepartments());
@@ -64,7 +72,6 @@ public class EmployeeController {
             );
             return "redirect:/employees/add";
         }
-
         employeeService.addEmployee(employeeModel);
         return "redirect:/employees/all";
     }

@@ -50,15 +50,32 @@
                 </label>
             </div>
 
-            <label for="department">
-                Подразделение
+            <div sec:authorize="hasRole('ADMIN')">
+                <label for="department">
+                Отдел
                 <select id="department" th:field="*{departmentId}" required>
-                    <option value="">Выберите подразделение...</option>
+                    <option value="">Выберите отдел...</option>
                     <option th:each="d : ${departments}"
                             th:value="${d.id}"
                             th:text="${d.shortName}"></option>
                 </select>
             </label>
+            </div>
+
+            <div sec:authorize="hasRole('MODERATOR')">
+                <label for="department">
+                Отдел
+                <select id="department" th:field="*{departmentId}" disabled>
+            <option th:each="d : ${departments}"
+                    th:if="${d.id == userDepartmentId}"
+                    th:value="${d.id}"
+                    th:text="${d.shortName}"
+                    selected>
+            </option>
+            </select>
+            <input type="hidden" th:field="*{departmentId}">
+            </label>
+            </div>
 
             <label for="officeNumber">Кабинет
                 <input th:field="*{officeNumber}" id="officeNumber" />
