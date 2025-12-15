@@ -26,9 +26,9 @@
                 </label>
 
             <label for="department">
-                Подразделение
+                Отдел
                 <select id="department" th:field="*{departmentId}">
-                    <option value="">Выберите подразделение...</option>
+                    <option value="">Выберите отдел...</option>
                     <option th:each="d : ${departments}"
                             th:value="${d.id}"
                             th:text="${d.shortName}"></option>
@@ -38,27 +38,20 @@
             </label>
 
             <fieldset>
-                <legend>Выберите роль</legend>
+                <legend>Выберите роль(наличие прав)</legend>
                 <label>
                     <input th:field="*{role}"
                            th:value="USER"
                            type="radio"
                            name="role"/>
-                    USER
+                    Без функционала (USER)
                 </label>
                 <label>
                     <input th:field="*{role}"
                            th:value="MODERATOR"
                            type="radio"
                            name="role"/>
-                    MODERATOR
-                </label>
-                <label>
-                    <input th:field="*{role}"
-                           th:value="ADMIN"
-                           type="radio"
-                           name="role"/>
-                    ADMIN
+                    Права на модерацию (MODER)
                 </label>
                 <small th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="text-danger"></small>
             </fieldset>

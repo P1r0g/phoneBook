@@ -38,14 +38,15 @@ public interface UserRepository extends JpaRepository<UserAccount, Long> {
             @Param("role") UserRole role
     );
 
-    @Query("SELECT u.id FROM UserAccount u ORDER BY username ASC")
+    @Query("SELECT u.id FROM UserAccount u WHERE " +
+           "u.role IN ('USER', 'MODERATOR') " +
+           "ORDER BY username ASC")
     List<Long> findAllUserIds();
 
     @Query("SELECT u FROM UserAccount u WHERE " +
            "CAST(u.id AS string) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(u.username) LIKE LOWER(CONCAT('%', :searchTerm, '%')) AND " +
            "u.role IN ('USER', 'MODERATOR') " +
-        //    "LOWER(u.role) LIKE LOWER(CONCAT('%', :searchTerm, '%'))" +
             "ORDER BY u.username ASC")
     List<UserAccount> searchUsers(@Param("searchTerm") String searchTerm);
     

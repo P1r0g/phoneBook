@@ -16,7 +16,7 @@ public class HomeController {
 
     @GetMapping("/info")
     public String infoPage() {
-        log.debug("Отображение страницы с информацией о проете");
+        log.debug("Отображение страницы с информацией о проекте");
         return "index";
     }
     

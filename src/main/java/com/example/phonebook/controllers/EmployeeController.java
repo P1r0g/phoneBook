@@ -5,6 +5,7 @@ import com.example.phonebook.dto.ShowDepartmentInfoDto;
 import com.example.phonebook.dto.ShowEmployeeDto;
 import com.example.phonebook.dto.UpdateEmployeeDto;
 import com.example.phonebook.models.entities.Employee;
+import com.example.phonebook.models.entities.UserAccount;
 import com.example.phonebook.services.DepartmentService;
 import com.example.phonebook.services.EmployeeService;
 import jakarta.validation.Valid;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -68,18 +71,31 @@ public class EmployeeController {
 
 
     @GetMapping("/all")
-public String showAllEmployees(
+    public String showAllEmployees(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "9") int size,
         @RequestParam(defaultValue = "lastName") String sortBy,
         @RequestParam(required = false) String search,
         @RequestParam(required = false) Long department, 
         Model model) {
-    
+
+    // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    // boolean isAdmin = false;
+    // boolean isModerator = false;
     log.debug("Отображение списка сотрудников: страница {}, размер {}, сортировка {}, поиск {}");
     List<ShowDepartmentInfoDto> departments = departmentService.allDepartments();
     model.addAttribute("departments", departments);
-    
+    // if (authentication != null && authentication.isAuthenticated()) {
+    //     isAdmin = authentication.getAuthorities().stream()
+    //                     .anyMatch(a -> a.getAuthority().equals("ADMIN"));
+    //     isModerator = authentication.getAuthorities().stream()
+    //                     .anyMatch(a -> a.getAuthority().equals("MODERATOR"));
+    // }
+    // // if(isModerator) {
+
+    // }
+    // model.addAttribute("isAdmin", isAdmin);
+    // model.addAttribute("isModerator", isModerator);
     if (search != null && !search.trim().isEmpty()) {
         if (department != null) {
             model.addAttribute("allEmployees", employeeService.searchEmployeesInDepartment(search, department));

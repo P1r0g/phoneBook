@@ -65,27 +65,20 @@
                            name="role"/>
                     MODERATOR
                 </label>
-                <label>
-                    <input th:field="*{role}"
-                           th:value="ADMIN"
-                           type="radio"
-                           name="role"/>
-                    ADMIN
-                </label>
                 <small th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="text-danger"></small>
             </fieldset>
 
             <label for="department">
-                Подразделение
+                Отдел
                 <select id="department" th:field="*{departmentId}" required>
-                    <option value="">Выберите подразделение...</option>
+                    <option value="">Выберите отдел...</option>
                     <option th:each="d : ${departments}"
                             th:value="${d.id}"
                             th:text="${d.shortName}"></option>
                 </select>
             </label>
 
-            <button type="submit">Зарегистрироваться</button>
+            <button type="submit">Создать</button>
         </form>
     </article>
 </main>
