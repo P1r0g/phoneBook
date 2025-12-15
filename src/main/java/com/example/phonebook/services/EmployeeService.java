@@ -9,6 +9,7 @@ import com.example.phonebook.dto.AddEmployeeDto;
 import com.example.phonebook.dto.ShowEmployeeDto;
 import com.example.phonebook.dto.UpdateEmployeeDto;
 import com.example.phonebook.models.entities.Employee;
+import com.example.phonebook.models.entities.UserAccount;
 
 public interface EmployeeService {
     
@@ -29,4 +30,16 @@ public interface EmployeeService {
     List<ShowEmployeeDto> searchEmployeesInDepartment(String searchTerm, Long departmentId);
 
     void fireEmployee(String employeeFullName);
+
+    UserAccount getCurrentUser();
+
+    Long getCurrentUserDepartmentId();
+
+    boolean isCurrentUserAdmin();
+
+    boolean isCurrentUserModerator();
+
+    boolean canCurrentUserEditEmployee(Long employeeId);
+
+    boolean canCurrentUserEditEmployee(String employeeFullName);
 }

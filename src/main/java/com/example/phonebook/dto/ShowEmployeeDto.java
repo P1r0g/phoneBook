@@ -13,6 +13,7 @@ public class ShowEmployeeDto implements Serializable {
     private String statusNote;
     private String additionalInfo;
     private String departmentShortName;
+    private Long departmentId;
 
     public String getFirstName() {
         return firstName;
@@ -93,4 +94,13 @@ public class ShowEmployeeDto implements Serializable {
     public void setDepartmentShortName(String departmentShortName) {
         this.departmentShortName = departmentShortName;
     }
+
+    public Long getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
+    }
+    
 }

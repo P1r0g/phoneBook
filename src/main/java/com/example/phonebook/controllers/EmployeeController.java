@@ -79,23 +79,19 @@ public class EmployeeController {
         @RequestParam(required = false) Long department, 
         Model model) {
 
-    // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    // boolean isAdmin = false;
-    // boolean isModerator = false;
     log.debug("Отображение списка сотрудников: страница {}, размер {}, сортировка {}, поиск {}");
     List<ShowDepartmentInfoDto> departments = departmentService.allDepartments();
     model.addAttribute("departments", departments);
-    // if (authentication != null && authentication.isAuthenticated()) {
-    //     isAdmin = authentication.getAuthorities().stream()
-    //                     .anyMatch(a -> a.getAuthority().equals("ADMIN"));
-    //     isModerator = authentication.getAuthorities().stream()
-    //                     .anyMatch(a -> a.getAuthority().equals("MODERATOR"));
-    // }
-    // // if(isModerator) {
-
-    // }
-    // model.addAttribute("isAdmin", isAdmin);
-    // model.addAttribute("isModerator", isModerator);
+    boolean isAdmin = employeeService.isCurrentUserAdmin();
+    boolean isModerator = employeeService.isCurrentUserModerator();
+    Long userDepartmentId = employeeService.getCurrentUserDepartmentId();
+        
+    log.debug("Права пользователя: admin={}, moderator={}, departmentId={}", 
+                 isAdmin, isModerator, userDepartmentId);
+        
+    model.addAttribute("isAdmin", isAdmin);
+    model.addAttribute("isModerator", isModerator);
+    model.addAttribute("userDepartmentId", userDepartmentId);
     if (search != null && !search.trim().isEmpty()) {
         if (department != null) {
             model.addAttribute("allEmployees", employeeService.searchEmployeesInDepartment(search, department));
