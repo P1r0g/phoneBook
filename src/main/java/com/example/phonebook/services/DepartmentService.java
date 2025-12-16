@@ -2,12 +2,15 @@
 
  import com.example.phonebook.dto.ShowDepartmentInfoDto;
 
- import java.util.List;
+import java.util.List;
+import java.util.Optional;
 
  public interface DepartmentService {
 
-     List<ShowDepartmentInfoDto> allDepartments();
+    Optional<ShowDepartmentInfoDto> getDepartmentById(Long departmentId);
+    
+    List<ShowDepartmentInfoDto> allDepartments();
 
-     List<ShowDepartmentInfoDto> searchDepartments(String searchTerm);
+    List<ShowDepartmentInfoDto> searchDepartments(String searchTerm);
 
  }

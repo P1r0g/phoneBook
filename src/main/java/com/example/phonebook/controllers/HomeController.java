@@ -10,7 +10,14 @@ public class HomeController {
 
     @GetMapping("/")
     public String homePage() {
-        log.debug("Отображение главной страницы");
+        log.debug("Перевод на страницу сотрудников");
+        return "redirect:/employees/all";
+    }
+
+    @GetMapping("/info")
+    public String infoPage() {
+        log.debug("Отображение страницы с информацией о проекте");
         return "index";
     }
+    
 }

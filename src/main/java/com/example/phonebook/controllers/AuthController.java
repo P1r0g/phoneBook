@@ -42,7 +42,7 @@ public class AuthController {
 
     @GetMapping("/register")
     public String register(Model model) {
-        log.debug("Отображение страницы регистрации");
+        log.debug("Отображение страницы создания пользователя");
         model.addAttribute("departments", departmentService.allDepartments());
         return "register";
     }
@@ -51,10 +51,10 @@ public class AuthController {
     public String doRegister(@Valid UserRegistrationDto userRegistrationDto,
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) {
-        log.debug("Обработка регистрации пользователя: {}", userRegistrationDto.getUsername());
+        log.debug("Обработка создания пользователя: {}", userRegistrationDto.getUsername());
 
         if (bindingResult.hasErrors()) {
-            log.warn("Ошибки валидации при регистрации: {}", bindingResult.getAllErrors());
+            log.warn("Ошибки валидации при создании пользователя: {}", bindingResult.getAllErrors());
             redirectAttributes.addFlashAttribute("userRegistrationDto", userRegistrationDto);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userRegistrationDto", bindingResult);
 
@@ -64,7 +64,7 @@ public class AuthController {
         this.authService.register(userRegistrationDto);
         log.info("Пользователь успешно зарегистрирован: {}", userRegistrationDto.getUsername());
 
-        return "redirect:/users/login";
+        return "redirect:/moderators/all";
     }
 
     @GetMapping("/login")

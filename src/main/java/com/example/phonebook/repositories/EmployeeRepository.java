@@ -36,7 +36,21 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>{
 
      @Query("SELECT e FROM Employee e ORDER BY e.lastName ASC, e.firstName ASC")
     List<Employee> findAllOrderedByLastName();
-    
+
+    @Query("SELECT e FROM Employee e WHERE " +
+       "e.department.id = :departmentId AND (" +
+       "LOWER(e.lastName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+       "LOWER(e.firstName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+       "LOWER(e.middleName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+       "LOWER(e.officeNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+       "LOWER(e.workPhone) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+       "LOWER(e.personalPhone) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+       "LOWER(e.email) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+       "LOWER(e.statusNote) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+       "LOWER(e.additionalInfo) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) " +
+       "ORDER BY e.lastName ASC, e.firstName ASC")
+    List<Employee> searchEmployeesInDepartment( @Param("searchTerm") String searchTerm, @Param("departmentId") Long departmentId);
+
     @Modifying
     @Transactional
     @Query("""
@@ -61,5 +75,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>{
             @Param("additionalInfo") String additionalInfo
     );
 
+    @Query("SELECT e FROM Employee e WHERE e.department.id = :departmentId ORDER BY e.lastName ASC, e.firstName ASC")
+    List<Employee> findByDepartmentId(@Param("departmentId") Long departmentId);
 
 }

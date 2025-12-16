@@ -1,12 +1,24 @@
 package com.example.phonebook.controllers;
 
 import com.example.phonebook.dto.AddEmployeeDto;
+import com.example.phonebook.dto.ShowDepartmentInfoDto;
+import com.example.phonebook.dto.ShowEmployeeDto;
 import com.example.phonebook.dto.UpdateEmployeeDto;
 import com.example.phonebook.models.entities.Employee;
+import com.example.phonebook.models.entities.UserAccount;
 import com.example.phonebook.services.DepartmentService;
 import com.example.phonebook.services.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,7 +43,15 @@ public class EmployeeController {
     @GetMapping("/add")
     public String addEmployeeForm(Model model) {
         if (!model.containsAttribute("employeeModel")) {
-            model.addAttribute("employeeModel", new AddEmployeeDto());
+            boolean isModerator = employeeService.isCurrentUserModerator();
+            Long userDepartmentId = employeeService.getCurrentUserDepartmentId();
+            AddEmployeeDto addEmployeeDto = new AddEmployeeDto();
+            if (isModerator) {
+                addEmployeeDto.setDepartmentId(userDepartmentId);
+            }
+            model.addAttribute("isModerator", isModerator);
+            model.addAttribute("userDepartmentId", userDepartmentId);
+            model.addAttribute("employeeModel", addEmployeeDto);
         }
 
         model.addAttribute("departments", departmentService.allDepartments());
@@ -52,23 +72,76 @@ public class EmployeeController {
             );
             return "redirect:/employees/add";
         }
-
         employeeService.addEmployee(employeeModel);
         return "redirect:/employees/all";
     }
 
 
     @GetMapping("/all")
-    public String showAllEmployees(@RequestParam(required = false) String search, Model model) {
-        if (search != null && !search.trim().isEmpty()) {
-            model.addAttribute("allEmployees", employeeService.searchEmployees(search));
+    public String showAllEmployees(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "9") int size,
+        @RequestParam(defaultValue = "lastName") String sortBy,
+        @RequestParam(required = false) String search,
+        @RequestParam(required = false) Long department, 
+        Model model) {
+
+    log.debug("Отображение списка сотрудников: страница {}, размер {}, сортировка {}, поиск {}");
+    List<ShowDepartmentInfoDto> departments = departmentService.allDepartments();
+    model.addAttribute("departments", departments);
+    boolean isAdmin = employeeService.isCurrentUserAdmin();
+    boolean isModerator = employeeService.isCurrentUserModerator();
+    Long userDepartmentId = employeeService.getCurrentUserDepartmentId();
+        
+    log.debug("Права пользователя: admin={}, moderator={}, departmentId={}", 
+                 isAdmin, isModerator, userDepartmentId);
+        
+    model.addAttribute("isAdmin", isAdmin);
+    model.addAttribute("isModerator", isModerator);
+    model.addAttribute("userDepartmentId", userDepartmentId);
+    if (search != null && !search.trim().isEmpty()) {
+        if (department != null) {
+            model.addAttribute("allEmployees", employeeService.searchEmployeesInDepartment(search, department));
         } else {
-            model.addAttribute("allEmployees", employeeService.allEmployees());
+            model.addAttribute("allEmployees", employeeService.searchEmployees(search));
+        }
+        model.addAttribute("search", search);
+        model.addAttribute("selectedDepartment", department);
+        
+        if (department != null) {
+            String selectedDepartmentName = departments.stream()
+                .filter(d -> d.getId().equals(department))
+                .findFirst()
+                .map(ShowDepartmentInfoDto::getShortName)
+                .orElse("Неизвестный отдел");
+            model.addAttribute("selectedDepartmentName", selectedDepartmentName);
         }
         
-        model.addAttribute("search", search);
-        return "employee-all";
+    } else if (department != null) {
+        model.addAttribute("allEmployees", employeeService.findEmployeesByDepartment(department));
+        model.addAttribute("selectedDepartment", department);
+        
+        String selectedDepartmentName = departments.stream()
+            .filter(d -> d.getId().equals(department))
+            .findFirst()
+            .map(ShowDepartmentInfoDto::getShortName)
+            .orElse("Неизвестный отдел");
+        model.addAttribute("selectedDepartmentName", selectedDepartmentName);
+        
+    } else {
+            model.addAttribute("allEmployees", employeeService.searchEmployees(search));
+            model.addAttribute("search", search);
+            model.addAttribute("selectedDepartment", department);
+        // Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
+        // Page<ShowEmployeeDto> employeePage = employeeService.allEmployeesPaginated(pageable);
+        // model.addAttribute("allEmployees", employeePage.getContent());
+        // model.addAttribute("currentPage", page);
+        // model.addAttribute("totalPages", employeePage.getTotalPages());
+        // model.addAttribute("totalItems", employeePage.getTotalElements());
     }
+    
+    return "employee-all";
+}
 
 
     @DeleteMapping("/employee-delete/{employee-full-name}")

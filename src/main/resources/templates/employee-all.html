@@ -8,17 +8,40 @@
         <h1>Все сотрудники</h1>
     </hgroup>
 
-    <form method="get" action="/employees/all" id="searchForm">
-        <div class="grid">
-            <input type="search"
-                   name="search"
-                   th:value="${search}"
-                   placeholder="Поиск сотрудников..."
-                   aria-label="Поиск"
-                   id="searchInput"
-                   autocomplete="off">
+    <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
+        <div style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
+            <span style="font-weight: bold; margin-right: 5px;">Отдел:</span>
+            <a href="/employees/all" 
+               th:class="${selectedDepartment == null} ? 'department-btn active' : 'department-btn'"
+               style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">
+                Все
+            </a>
+            
+            <a th:each="dept : ${departments}"
+               th:href="@{/employees/all?department={id}(id=${dept.id})}"
+               th:class="${selectedDepartment != null and selectedDepartment == dept.id} ? 'department-btn active' : 'department-btn'"
+               th:text="${dept.shortName}"
+               style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">
+            </a>
         </div>
-    </form>
+    </div>
+        <form method="get" action="/employees/all" id="searchForm" style="flex-grow: 1">
+            <div style="display: flex; gap: 5px;">
+                <input type="search"
+                       name="search"
+                       th:value="${search}"
+                       placeholder="Поиск сотрудников..."
+                       th:attr="placeholder=${selectedDepartment != null} ? 'Поиск в отделе' : 'Поиск сотрудников...'"
+                       aria-label="Поиск"
+                       id="searchInput"
+                       autocomplete="off"
+                       style="flex-grow: 1;">
+                <input type="hidden" 
+                       name="department" 
+                       th:value="${selectedDepartment}"
+                       id="departmentHidden">
+            </div>
+        </form>
 
     <div id="resultsContainer">
         <div style="
@@ -29,47 +52,50 @@
         ">
             <div th:each="e : ${allEmployees}" class="card" style="margin-bottom: 0;">
                 <h3><strong th:text="${e.lastName} + ' ' + ${e.firstName} + ' ' + ${e.middleName}"></strong></h3>
-                <h4><strong th:text="${e.departmentShortName}"></strong></h5>
+                <h4><strong th:text="${e.departmentShortName}"></strong></h4>
                 <p th:if="${e.workPhone}">
                     Рабочий телефон: 
                     <a th:href="'tel:' + ${#strings.replace(e.workPhone, ' ', '')}" 
                     th:text="${e.workPhone}"
                     style="font-weight: bold; text-decoration: none;"></a>
-                    </p>
-                    <p th:if="${e.personalPhone}">
+                </p>
+                <p th:if="${e.personalPhone}">
                     Личный телефон: 
                     <a th:href="'tel:' + ${#strings.replace(e.personalPhone, ' ', '')}" 
                     th:text="${e.personalPhone}"
                     style="font-weight: bold; text-decoration: none;"></a>
-                    </p>
-                    <p th:if="${e.email}">
+                </p>
+                <p th:if="${e.email}">
                     Email:
                     <a th:href="'mailto:' + ${e.email}" 
                     th:text="${e.email}"
                     style="font-weight: bold; text-decoration: none;"></a>
-                    </p>
-                    <p>
+                </p>
+                <p>
                     Кабинет:
                     <span th:text="${e.officeNumber}" style="font-weight: bold;"></span>
-                    </p>
-                    <p th:if="${e.additionalInfo}">
+                </p>
+                <p th:if="${e.additionalInfo}">
                     Telegram:
                     <a th:href="'https://t.me/' + ${e.additionalInfo}" 
                     th:text="'@' + ${e.additionalInfo}"
                     style="font-weight: bold; text-decoration: none;"></a>
-                    </p>
-                    <p th:if="${e.statusNote}">
+                </p>
+                <p th:if="${e.statusNote}">
                     Дополнительная информация:
                     <span th:text="${e.statusNote}" style="font-weight: bold;"></span>
-                    </p>
+                </p>
                 
-                <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+                <div th:if="${isAdmin or (isModerator and userDepartmentId == e.departmentId)}">
                     <form th:action="@{/employees/update/{name}(name=${e.lastName + ' ' + e.firstName + ' ' + e.middleName})}"
-                        th:method="get">
+                          th:method="get">
                         <button type="submit" class="primary">Изменить</button>
-                        </form>
-                    </div>
-                <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
+                    </form>
+                </div>
+                
+                <!-- Кнопка "Удалить" -->
+                <!-- Только для админа -->
+                <div th:if="${isAdmin or (isModerator and userDepartmentId == e.departmentId)}">
                     <form th:action="@{/employees/employee-delete/{name}(name=${e.lastName + ' ' + e.firstName + ' ' + e.middleName})}"
                           th:method="delete"
                           onsubmit="return confirm('Вы уверены, что хотите удалить этого сотрудника?')">
@@ -78,9 +104,28 @@
                 </div>
             </div>
         </div>
-        
+        <nav th:if="${totalPages != null && totalPages > 1}" aria-label="Pagination">
+        <ul style="display: flex; justify-content: center; list-style: none; padding: 0;">
+            <li th:if="${currentPage > 0}">
+                <a th:href="@{/employees/all(page=${currentPage - 1}, size=9)}" role="button" class="outline">Назад</a>
+            </li>
+            <li style="margin: 0 1rem; align-self: center;">
+                <span>Страница <strong th:text="${currentPage + 1}"></strong> из <strong th:text="${totalPages}"></strong></span>
+            </li>
+            <li th:if="${currentPage + 1 < totalPages}">
+                <a th:href="@{/employees/all(page=${currentPage + 1}, size=9)}" role="button" class="outline">Вперед</a>
+            </li>
+        </ul>
+        </nav>
         <p th:if="${#lists.isEmpty(allEmployees)}" class="text-center">
-            <em>Сотрудники не найдены. Добавьте новых сотрудников, чтобы начать!</em>
+            <em> Введите запрос в поиск или выберите отдел.
+                <span th:if="${selectedDepartment != null}">
+                    В выбранном отделе нет сотрудников.
+                </span>
+                <span th:unless="${selectedDepartment != null}">
+                    
+                </span>
+            </em>
         </p>
     </div>
 </main>
@@ -88,65 +133,83 @@
 <footer th:replace="fragments/footer"></footer>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('searchInput');
-        const resultsContainer = document.getElementById('resultsContainer');
-        let debounceTimer;
+   document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const departmentHidden = document.getElementById('departmentHidden');
+    let debounceTimer;
 
-        searchInput.addEventListener('input', function() {
-            const cursorPosition = this.selectionStart;
-            const searchValue = this.value;
-            
-            clearTimeout(debounceTimer);
-            
-            debounceTimer = setTimeout(() => {
-                const url = new URL(window.location.href.split('?')[0]);
-                url.searchParams.set('search', searchValue);
-                
-                fetch(url, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.text();
-                })
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    
-                    const newResultsContainer = doc.getElementById('resultsContainer');
-                    
-                    if (newResultsContainer) {
-                        resultsContainer.innerHTML = newResultsContainer.innerHTML;
-                    }
-                    
-                    searchInput.focus();
-                    searchInput.setSelectionRange(cursorPosition, cursorPosition);
-                })
-                .catch(error => {
-                    console.error('Ошибка при поиске:', error);
-                });
-            }, 300);
-        });
-
-        searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                clearTimeout(debounceTimer);
-                
-                const event = new Event('input', {
-                    bubbles: true,
-                    cancelable: true,
-                });
-                this.dispatchEvent(event);
+    function performSearch() {
+        const cursorPosition = searchInput.selectionStart;
+        const searchValue = searchInput.value;
+        
+        const url = new URL(window.location.origin + '/employees/all');
+        
+        if (searchValue.trim() !== '') {
+            url.searchParams.set('search', searchValue);
+        }
+        
+        if (departmentHidden && departmentHidden.value) {
+            url.searchParams.set('department', departmentHidden.value);
+        }
+        
+        console.log('Fetching URL:', url.toString());
+        
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
             }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            const newResultsContainer = doc.getElementById('resultsContainer');
+            
+            if (newResultsContainer) {
+                resultsContainer.innerHTML = newResultsContainer.innerHTML;
+            }
+            
+            searchInput.focus();
+            searchInput.setSelectionRange(cursorPosition, cursorPosition);
+        })
+        .catch(error => {
+            console.error('Ошибка при поиске:', error);
         });
-        searchInput.focus();
+    }
+
+    // Поиск при паузе ввода (0.5 секунды)
+    searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        
+        debounceTimer = setTimeout(() => {
+            performSearch();
+        }, 500); // 1.5 секунды паузы
     });
+
+    // Поиск при нажатии Enter
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            clearTimeout(debounceTimer);
+            performSearch();
+        }
+    });
+    searchInput.addEventListener('input', function() {
+        if (this.value.trim() === '') {
+            performSearch(); // Для очистки результатов при пустом поле
+        }
+    });
+
+    searchInput.focus();
+    updatePlaceholder();
+});
 </script>
 </body>
 </html>
