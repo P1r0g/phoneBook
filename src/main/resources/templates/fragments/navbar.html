@@ -16,9 +16,10 @@
             <li sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
             <a href="/employees/add">Добавить сотрудника</a>
             </li>
-<!--            <li sec:authorize="hasRole('MODERATOR')"><a href="/moderator/employees/all">Сотрудники моего отдела</a></li>-->
            <li sec:authorize="hasRole('ADMIN')"><a href="/moderators/all">Пользователи</a></li>
            <li sec:authorize="hasRole('ADMIN')"><a href="/users/register">Добавить пользователя</a></li>
+            <li sec:authorize="hasRole('ADMIN')"><a href="/departments/all">Подразделения</a></li>
+            <li sec:authorize="hasRole('ADMIN')"><a href="/departments/add">Добавить подразделение</a></li>
             <li sec:authorize="isAuthenticated()">
                 <a href="/users/profile" role="button" class="secondary outline">
                     <th:block sec:authentication="name"></th:block>
@@ -29,8 +30,6 @@
                     <button type="submit" class="contrast outline">Выйти</button>
                 </form>
             </li>
-            <!-- <li sec:authorize="!isAuthenticated()"><a href="/users/register" role="button">Регистрация</a></li>
-            <li sec:authorize="!isAuthenticated()"><a href="/users/login" role="button" class="secondary">Вход</a></li> -->
         </ul>
     </div>
 </nav>

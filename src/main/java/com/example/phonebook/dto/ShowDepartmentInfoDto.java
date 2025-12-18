@@ -30,4 +30,5 @@ public class ShowDepartmentInfoDto implements Serializable {
     public void setShortName(String shortName) {
         this.shortName = shortName;
     }
+
 }

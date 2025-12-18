@@ -18,7 +18,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findAllActiveOrdered();
 
     @Query("SELECT e FROM Employee AS e WHERE e.id = :id AND e.isActive = true")
-    Optional<Employee> findEmployeeById(Long id);
+    Optional<Employee> findEmployeeById(@Param("id")Long id);
 
     @Modifying
     @Transactional

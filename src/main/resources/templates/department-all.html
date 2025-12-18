@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/head"/>
+<body>
+<div th:replace="fragments/navbar"></div>
+<main class="container">
+    <hgroup>
+        <h1>Все подразделения</h1>
+    </hgroup>
+
+    <div id="resultsContainer">
+        <div style="
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-top: 20px;
+        ">
+            <div th:each="department : ${allDepartments}" class="card" style="margin-bottom: 0;">
+                <h2><strong th:text="${department.shortName}"></strong></h2>
+                <h3><strong th:text="${department.fullName}"></strong></h3>
+
+                <div>
+                    <form th:action="@{/departments/update/{id}(id=${department.id})}"
+                          th:method="get">
+                        <button type="submit" class="primary">Изменить</button>
+                    </form>
+                </div>
+                <div>
+                    <form th:action="@{/departments/delete/{id}(id=${department.id})}"
+                          th:method="delete"
+                          onsubmit="return confirm('Вы уверены, что хотите удалить этого пользователя?')">
+                        <button type="submit" class="secondary">Удалить подразделение</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+<!--        <nav th:if="${totalPages != null && totalPages > 1}" aria-label="Pagination">-->
+<!--            <ul style="display: flex; justify-content: center; list-style: none; padding: 0;">-->
+<!--                <li th:if="${currentPage > 0}">-->
+<!--                    <a th:href="@{/departments/all(page=${currentPage - 1}, size=9)}" role="button"-->
+<!--                       class="outline">Назад</a>-->
+<!--                </li>-->
+<!--                <li style="margin: 0 1rem; align-self: center;">-->
+<!--                    <span>Страница <strong th:text="${currentPage + 1}"></strong> из <strong-->
+<!--                            th:text="${totalPages}"></strong></span>-->
+<!--                </li>-->
+<!--                <li th:if="${currentPage + 1 < totalPages}">-->
+<!--                    <a th:href="@{/departments/all(page=${currentPage + 1}, size=9)}" role="button"-->
+<!--                       class="outline">Вперед</a>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </nav>-->
+
+        <p th:if="${#lists.isEmpty(allDepartments)}" class="text-center">
+            <em>Подразделения не найдены. Добавьте новые подразделения, чтобы начать!</em>
+        </p>
+
+    </div>
+</main>
+
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

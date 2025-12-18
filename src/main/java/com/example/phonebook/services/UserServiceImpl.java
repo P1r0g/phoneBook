@@ -88,7 +88,4 @@ public class UserServiceImpl implements UserService {
             .map(user -> mapper.map(user, UserAccount.class))
             .orElse(null);
     }
-
-    
-    
 }

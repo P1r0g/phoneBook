@@ -1,22 +1,23 @@
  package com.example.phonebook.services;
 
- import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+ import com.example.phonebook.dto.AddDepartmentDto;
  import com.example.phonebook.dto.ShowDepartmentInfoDto;
+ import com.example.phonebook.dto.UpdateDepartmentDto;
+ import com.example.phonebook.models.entities.Department;
+ import com.example.phonebook.repositories.DepartmentRepository;
+ import lombok.extern.slf4j.Slf4j;
  import org.modelmapper.ModelMapper;
+ import org.springframework.cache.annotation.CacheEvict;
  import org.springframework.cache.annotation.Cacheable;
  import org.springframework.stereotype.Service;
  import org.springframework.transaction.annotation.Transactional;
 
- import com.example.phonebook.repositories.DepartmentRepository;
-
- import lombok.extern.slf4j.Slf4j;
+ import java.util.List;
+ import java.util.stream.Collectors;
 
  @Slf4j
  @Service
- @Transactional(readOnly = true)
+ @Transactional(readOnly = false)
  public class DepartmentServiceImpl implements DepartmentService {
      private final DepartmentRepository departmentRepository;
      private final ModelMapper mapper;
@@ -49,9 +50,37 @@ import java.util.stream.Collectors;
      }
 
      @Override
-    public Optional<ShowDepartmentInfoDto> getDepartmentById(Long id) {
-    return departmentRepository.findById(id)
-            .map(dept -> mapper.map(dept, ShowDepartmentInfoDto.class));
-}
-    
+     @Cacheable(value = "department", key = "#id")
+     public Department getDepartmentById(Long id) {
+         log.debug("Получение подразделения по id: {}", id);
+         return departmentRepository.findById(id).orElse(null);
+     }
+
+
+     @Override
+     @Transactional
+     @CacheEvict(cacheNames = "department", allEntries = true)
+     public void updateDepartment(Long id, UpdateDepartmentDto departmentDto) {
+         log.debug("Изменение подразделения по id: {}", id);
+         departmentRepository.updateById(
+                 id,
+                 departmentDto.getShortName(),
+                 departmentDto.getFullName(),
+                 departmentDto.getType()
+         );
+         log.info("Подразделение с id: {} изменено", id);
+     }
+
+     @Override
+     public void deleteDepartment(Long id) {
+        log.debug("Удаление подразделения с id: {}", id);
+        departmentRepository.deleteById(id);
+        log.info("Подразделение с id: {} удалено", id);
+     }
+
+     @Override
+     public void addDepartment(AddDepartmentDto departmentDto) {
+         Department department = mapper.map(departmentDto, Department.class);
+         departmentRepository.saveAndFlush(department);
+     }
  }
