@@ -65,7 +65,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Cacheable(value = "employees", key = "'all'")
     public List<ShowEmployeeDto> allEmployees() {
         log.debug("Получение списка всех сотрудников");
-        List<ShowEmployeeDto> employees = employeeRepository.findAllOrderedByLastName().stream()
+        List<ShowEmployeeDto> employees = employeeRepository.findAllActiveOrdered().stream()
                 .map(employee -> mapper.map(employee, ShowEmployeeDto.class))
                 .collect(Collectors.toList());
         log.debug("Найдено сотрудников: {}", employees.size());
@@ -93,23 +93,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     @CacheEvict(cacheNames = "employees", allEntries = true)
-    public void fireEmployee(String employeeFullName) {
-        log.debug("Увольнение сотрудника: {}", employeeFullName);
+    public void fireEmployee(Long id) {
+        log.debug("Увольнение сотрудника: {}", id);
 
-        Employee employee = employeeRepository.findEmployeeByFullName(employeeFullName);
-        if (employee == null) {
-            log.warn("Попытка уволить несуществующего сотрудника: {}", employeeFullName);
-            //throw new EmployeeNotFoundException("Сотрудник с именем '" + employeeFullName + "' не найден");
-        }
+        Employee employee = employeeRepository.findEmployeeById(id)
+                .orElseThrow(() -> new RuntimeException("Сотрудник не найден"));
 
-        employeeRepository.deleteEmployeeByFullName(employeeFullName);
-        log.info("Сотрудник уволен: {}", employeeFullName);
+        employeeRepository.deactivateById(id);
+        log.info("Сотрудник уволен: {}", id);
     }
 
     @Override
     public List<ShowEmployeeDto> searchEmployeesInDepartment(String searchTerm, Long departmentId) {
         log.debug("Поиск сотрудников в отделе {} по запросу: {}", departmentId, searchTerm);
-        List<ShowEmployeeDto> results = employeeRepository.searchEmployeesInDepartment(searchTerm, departmentId).stream()
+        List<ShowEmployeeDto> results = employeeRepository.searchActiveEmployeesInDepartment(searchTerm, departmentId).stream()
             .map(employee -> mapper.map(employee, ShowEmployeeDto.class))
             .collect(Collectors.toList());
         log.info("По запросу '{}' в отделе {} найдено сотрудников: {}", searchTerm, departmentId, results.size());        
@@ -119,7 +116,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<ShowEmployeeDto> searchEmployees(String searchTerm) {
         log.debug("Поиск сотрудников по запросу: {}", searchTerm);
-        List<ShowEmployeeDto> results = employeeRepository.searchEmployees(searchTerm).stream()
+        List<ShowEmployeeDto> results = employeeRepository.searchActiveEmployees(searchTerm).stream()
                 .map(employee -> mapper.map(employee, ShowEmployeeDto.class))
                 .collect(Collectors.toList());
         log.info("По запросу '{}' найдено сотрудников: {}", searchTerm, results.size());        
@@ -127,17 +124,21 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee findByFullName(String fullName) {
-        return employeeRepository.findEmployeeByFullName(fullName);
+    public Employee findById(Long id) {
+        log.debug("Поиск сотрудника по ID: {}", id);
+        return employeeRepository.findEmployeeById(id).orElse(null);
     }
 
     @Override
     @Transactional
     @CacheEvict(cacheNames = "employees", allEntries = true)
-    public void updateEmployee(String fullName, UpdateEmployeeDto dto) {
+    public void updateEmployee(Long id, UpdateEmployeeDto dto) {
         
-        employeeRepository.updateEmployeeByFullName(
-                fullName,
+        employeeRepository.updateEmployeeById(
+                id,
+                dto.getFirstName(),
+                dto.getLastName(),
+                dto.getMiddleName(),
                 dto.getDepartmentId(),
                 dto.getOfficeNumber(),
                 dto.getWorkPhone(),
@@ -147,7 +148,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 dto.getAdditionalInfo()
         );
 
-        log.info("Сотрудник обновлён: {}", fullName);
+        log.info("Сотрудник обновлён: {}", id);
     }
 
     @Override 
@@ -182,42 +183,5 @@ public class EmployeeServiceImpl implements EmployeeService {
         return user != null && user.getRole() == UserRole.MODERATOR;
     }
 
-    @Override
-    public boolean canCurrentUserEditEmployee(Long employeeId) {
-        if (isCurrentUserAdmin()) {
-            return true;
-        }
-        
-        if (isCurrentUserModerator()) {
-            Long userDepartmentId = getCurrentUserDepartmentId();
-            if (userDepartmentId == null) return false;
-            
-            Employee employee = employeeRepository.findById(employeeId).orElse(null);
-            return employee != null && 
-                   employee.getDepartment() != null &&
-                   employee.getDepartment().getId().equals(userDepartmentId);
-        }
-        
-        return false;
-    }
-
-    @Override
-    public boolean canCurrentUserEditEmployee(String employeeFullName) {
-        if (isCurrentUserAdmin()) {
-            return true;
-        }
-        
-        if (isCurrentUserModerator()) {
-            Long userDepartmentId = getCurrentUserDepartmentId();
-            if (userDepartmentId == null) return false;
-            
-            Employee employee = employeeRepository.findEmployeeByFullName(employeeFullName);
-            return employee != null && 
-                   employee.getDepartment() != null &&
-                   employee.getDepartment().getId().equals(userDepartmentId);
-        }
-        
-        return false;
-    }
 
 }

@@ -21,15 +21,15 @@ public interface EmployeeService {
 
     List<ShowEmployeeDto> searchEmployees(String searchTerm);
 
-    Employee findByFullName(String fullName);
+    Employee findById(Long id);
     
     List<ShowEmployeeDto> findEmployeesByDepartment(Long departmentId);
 
-    void updateEmployee(String fullName, UpdateEmployeeDto dto);
+    void updateEmployee(Long id, UpdateEmployeeDto dto);
     
     List<ShowEmployeeDto> searchEmployeesInDepartment(String searchTerm, Long departmentId);
 
-    void fireEmployee(String employeeFullName);
+    void fireEmployee(Long id);
 
     UserAccount getCurrentUser();
 
@@ -38,8 +38,4 @@ public interface EmployeeService {
     boolean isCurrentUserAdmin();
 
     boolean isCurrentUserModerator();
-
-    boolean canCurrentUserEditEmployee(Long employeeId);
-
-    boolean canCurrentUserEditEmployee(String employeeFullName);
 }

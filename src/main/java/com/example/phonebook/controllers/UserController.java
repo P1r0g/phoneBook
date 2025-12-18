@@ -112,9 +112,4 @@ public class UserController {
         userService.updateUser(id, userDto);    
         return "redirect:/moderators/all";
     }
-    
-    
-
-    
-    
 }
