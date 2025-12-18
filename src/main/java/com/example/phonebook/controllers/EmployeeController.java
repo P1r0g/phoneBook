@@ -79,90 +79,83 @@ public class EmployeeController {
 
     @GetMapping("/all")
     public String showAllEmployees(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "9") int size,
-        @RequestParam(defaultValue = "lastName") String sortBy,
-        @RequestParam(required = false) String search,
-        @RequestParam(required = false) Long department, 
-        Model model) {
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Long department,
+            Model model) {
 
-    log.debug("Отображение списка сотрудников: страница {}, размер {}, сортировка {}, поиск {}");
-    List<ShowDepartmentInfoDto> departments = departmentService.allDepartments();
-    model.addAttribute("departments", departments);
-    boolean isAdmin = employeeService.isCurrentUserAdmin();
-    boolean isModerator = employeeService.isCurrentUserModerator();
-    Long userDepartmentId = employeeService.getCurrentUserDepartmentId();
-        
-    log.debug("Права пользователя: admin={}, moderator={}, departmentId={}", 
-                 isAdmin, isModerator, userDepartmentId);
-        
-    model.addAttribute("isAdmin", isAdmin);
-    model.addAttribute("isModerator", isModerator);
-    model.addAttribute("userDepartmentId", userDepartmentId);
-    if (search != null && !search.trim().isEmpty()) {
-        if (department != null) {
-            model.addAttribute("allEmployees", employeeService.searchEmployeesInDepartment(search, department));
-        } else {
-            model.addAttribute("allEmployees", employeeService.searchEmployees(search));
-        }
-        model.addAttribute("search", search);
-        model.addAttribute("selectedDepartment", department);
-        
-        if (department != null) {
+        log.debug("Отображение списка сотрудников: страница {}, размер {}, сортировка {}, поиск {}");
+        List<ShowDepartmentInfoDto> departments = departmentService.allDepartments();
+        model.addAttribute("departments", departments);
+        boolean isAdmin = employeeService.isCurrentUserAdmin();
+        boolean isModerator = employeeService.isCurrentUserModerator();
+        Long userDepartmentId = employeeService.getCurrentUserDepartmentId();
+
+        log.debug("Права пользователя: admin={}, moderator={}, departmentId={}",
+                isAdmin, isModerator, userDepartmentId);
+
+        model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("isModerator", isModerator);
+        model.addAttribute("userDepartmentId", userDepartmentId);
+        if (search != null && !search.trim().isEmpty()) {
+            if (department != null) {
+                model.addAttribute("allEmployees", employeeService.searchEmployeesInDepartment(search, department));
+            } else {
+                model.addAttribute("allEmployees", employeeService.searchEmployees(search));
+            }
+            model.addAttribute("search", search);
+            model.addAttribute("selectedDepartment", department);
+
+            if (department != null) {
+                String selectedDepartmentName = departments.stream()
+                        .filter(d -> d.getId().equals(department))
+                        .findFirst()
+                        .map(ShowDepartmentInfoDto::getShortName)
+                        .orElse("Неизвестный отдел");
+                model.addAttribute("selectedDepartmentName", selectedDepartmentName);
+            }
+
+        } else if (department != null) {
+            model.addAttribute("allEmployees", employeeService.findEmployeesByDepartment(department));
+            model.addAttribute("selectedDepartment", department);
+
             String selectedDepartmentName = departments.stream()
-                .filter(d -> d.getId().equals(department))
-                .findFirst()
-                .map(ShowDepartmentInfoDto::getShortName)
-                .orElse("Неизвестный отдел");
+                    .filter(d -> d.getId().equals(department))
+                    .findFirst()
+                    .map(ShowDepartmentInfoDto::getShortName)
+                    .orElse("Неизвестный отдел");
             model.addAttribute("selectedDepartmentName", selectedDepartmentName);
-        }
-        
-    } else if (department != null) {
-        model.addAttribute("allEmployees", employeeService.findEmployeesByDepartment(department));
-        model.addAttribute("selectedDepartment", department);
-        
-        String selectedDepartmentName = departments.stream()
-            .filter(d -> d.getId().equals(department))
-            .findFirst()
-            .map(ShowDepartmentInfoDto::getShortName)
-            .orElse("Неизвестный отдел");
-        model.addAttribute("selectedDepartmentName", selectedDepartmentName);
-        
-    } else {
+
+        } else {
             model.addAttribute("allEmployees", employeeService.searchEmployees(search));
             model.addAttribute("search", search);
             model.addAttribute("selectedDepartment", department);
-        // Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
-        // Page<ShowEmployeeDto> employeePage = employeeService.allEmployeesPaginated(pageable);
-        // model.addAttribute("allEmployees", employeePage.getContent());
-        // model.addAttribute("currentPage", page);
-        // model.addAttribute("totalPages", employeePage.getTotalPages());
-        // model.addAttribute("totalItems", employeePage.getTotalElements());
+        }
+
+        return "employee-all";
     }
-    
-    return "employee-all";
-}
 
 
-    @DeleteMapping("/employee-delete/{employee-full-name}")
-    public String fireEmployee(@PathVariable("employee-full-name") String employeeFullName) {
-        employeeService.fireEmployee(employeeFullName);
+    @PostMapping("/delete/{id}")
+    public String fireEmployee(@PathVariable("id") Long id) {
+        employeeService.fireEmployee(id);
         return "redirect:/employees/all";
     }
 
 
-    @GetMapping("/update/{fullName}")
+    @GetMapping("/update/{id}")
     public String showUpdateForm(
-            @PathVariable String fullName,
+            @PathVariable Long id,
             Model model
     ) {
-        Employee employee = employeeService.findByFullName(fullName);
-
-        if (employee == null) {
-            return "redirect:/employees/all";
+        Employee employee = employeeService.findById(id);
+        if (employee == null || !employee.IsActive()) {
+            return "redirect:/employees/all?error=Сотрудник не найден";
         }
 
         UpdateEmployeeDto dto = new UpdateEmployeeDto();
+        dto.setFirstName(employee.getFirstName());
+        dto.setLastName(employee.getLastName());
+        dto.setMiddleName(employee.getMiddleName());
         dto.setDepartmentId(employee.getDepartment().getId());
         dto.setOfficeNumber(employee.getOfficeNumber());
         dto.setWorkPhone(employee.getWorkPhone());
@@ -173,15 +166,15 @@ public class EmployeeController {
 
         model.addAttribute("employeeModel", dto);
         model.addAttribute("departments", departmentService.allDepartments());
-        model.addAttribute("fullName", fullName);
+        model.addAttribute("id", id);
 
         return "employee-update";
     }
 
 
-    @PostMapping("/update/{fullName}")
+    @PostMapping("/update/{id}")
     public String updateEmployee(
-            @PathVariable String fullName,
+            @PathVariable Long id,
             @Valid @ModelAttribute("employeeModel") UpdateEmployeeDto employeeDto,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
@@ -192,10 +185,10 @@ public class EmployeeController {
                     "org.springframework.validation.BindingResult.employeeModel",
                     bindingResult
             );
-            return "redirect:/employees/update/" + fullName;
+            return "redirect:/employees/update/" + id;
         }
 
-        employeeService.updateEmployee(fullName, employeeDto);
+        employeeService.updateEmployee(id, employeeDto);
 
         return "redirect:/employees/all";
     }

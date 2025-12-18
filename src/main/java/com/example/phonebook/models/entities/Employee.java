@@ -40,7 +40,18 @@ public class Employee {
     @Column(name = "additional_info", columnDefinition = "TEXT")
     private String additionalInfo;
 
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive;
+
     public Employee() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getLastName() {
@@ -121,5 +132,13 @@ public class Employee {
 
     public void setAdditionalInfo(String additionalInfo) {
         this.additionalInfo = additionalInfo;
+    }
+
+    public boolean IsActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
