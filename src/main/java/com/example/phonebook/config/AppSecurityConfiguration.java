@@ -28,12 +28,12 @@ public class AppSecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/favicon.ico", "/error", "/logo.png").permitAll()
-                        .requestMatchers("/", "/info", "/users/login", "/users/register", "/users/login-error", "/employees/all").permitAll()
+                        .requestMatchers("/", "/info", "/users/login", "/users/login-error", "/employees/all").permitAll()
                         .requestMatchers("/actuator/").permitAll()
                         .requestMatchers("/users/profile").authenticated()
-                        .requestMatchers("/employees/add", "/employees/employee-delete/*")
+                        .requestMatchers("/employees/add", "/employees/delete/*")
                         .hasAnyAuthority("ROLE_MODERATOR", "ROLE_ADMIN")
-                        .requestMatchers("/companies/add", "/companies/company-delete/*")
+                        .requestMatchers("/departments/add", "/departments/delete/*", "/users/register", "/employees/inactive", "/moderators/all", "/moderators/update/*", "/moderators/delete/*")
                         .hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -47,7 +47,7 @@ public class AppSecurityConfiguration {
                 )
                 .rememberMe(remember -> remember
                         .key("uniqueAndSecret")
-                        .tokenValiditySeconds(86400 * 7)
+                        .tokenValiditySeconds(-1)
                         .rememberMeParameter("remember-me")
                 )
                 .logout(logout -> logout

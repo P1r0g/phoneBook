@@ -50,7 +50,7 @@
      }
 
      @Override
-     @Cacheable(value = "department", key = "#id")
+     @Cacheable(value = "departments", key = "#id")
      public Department getDepartmentById(Long id) {
          log.debug("Получение подразделения по id: {}", id);
          return departmentRepository.findById(id).orElse(null);
@@ -59,7 +59,7 @@
 
      @Override
      @Transactional
-     @CacheEvict(cacheNames = "department", allEntries = true)
+     @CacheEvict(cacheNames = "departments", allEntries = true)
      public void updateDepartment(Long id, UpdateDepartmentDto departmentDto) {
          log.debug("Изменение подразделения по id: {}", id);
          departmentRepository.updateById(
@@ -72,6 +72,7 @@
      }
 
      @Override
+     @CacheEvict(cacheNames = "departments", allEntries = true)
      public void deleteDepartment(Long id) {
         log.debug("Удаление подразделения с id: {}", id);
         departmentRepository.deleteById(id);
@@ -79,6 +80,7 @@
      }
 
      @Override
+     @CacheEvict(cacheNames = "departments", allEntries = true)
      public void addDepartment(AddDepartmentDto departmentDto) {
          Department department = mapper.map(departmentDto, Department.class);
          departmentRepository.saveAndFlush(department);

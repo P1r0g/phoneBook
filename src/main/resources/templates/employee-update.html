@@ -50,10 +50,11 @@
                 </label>
             </div>
 
+            <div sec:authorize="hasRole('ADMIN')">
             <label for="department">
-                Подразделение
+                Отдел
                 <select id="department" th:field="*{departmentId}" required>
-                    <option value="">Выберите подразделение...</option>
+                    <option value="">Выберите отдел...</option>
                     <option th:each="d : ${departments}"
                             th:value="${d.id}"
                             th:text="${d.shortName}"></option>
@@ -61,7 +62,8 @@
                 <small th:if="${#fields.hasErrors('departmentId')}" th:errors="*{departmentId}"
                        class="text-danger"></small>
             </label>
-
+            </div>
+            
             <div>
                 <label for="officeNumber">
                     Кабинет
@@ -76,7 +78,7 @@
                 </label>
 
                 <label for="workPhone">
-                    Рабочий номер
+                    Рабочий телефон
                     <input th:field="*{workPhone}"
                            th:errorclass="is-invalid"
                            id="workPhone"
@@ -86,7 +88,7 @@
                 </label>
 
                 <label for="personalPhone">
-                    Номер телефона
+                    Личный телефон
                     <input th:field="*{personalPhone}"
                            th:errorclass="is-invalid"
                            id="personalPhone"
@@ -111,13 +113,13 @@
                     <input th:field="*{statusNote}"
                            th:errorclass="is-invalid"
                            id="statusNote"
-                           placeholder="Введите дополнительную информацию"/>
+                           placeholder="Введите дополнительную информацию при необходимости"/>
                     <small th:if="${#fields.hasErrors('statusNote')}" th:errors="*{statusNote}"
                            class="text-danger"></small>
                 </label>
 
                 <label for="additionalInfo">
-                    Телеграм id
+                    Telegram id
                     <input th:field="*{additionalInfo}"
                            th:errorclass="is-invalid"
                            id="additionalInfo"

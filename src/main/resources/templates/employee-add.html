@@ -78,27 +78,33 @@
             </div>
 
             <label for="officeNumber">Кабинет
-                <input th:field="*{officeNumber}" id="officeNumber" />
+                <input th:field="*{officeNumber}" id="officeNumber"
+                placeholder="Введите кабинет" />
             </label>
 
-            <label for="workPhone">Рабочий номер
-                <input th:field="*{workPhone}" id="workPhone" />
+            <label for="workPhone">Рабочий телефон
+                <input th:field="*{workPhone}" id="workPhone"
+                placeholder="Введите рабочий номер(4 цифры)" />
             </label>
 
-            <label for="personalPhone">Номер телефона
-                <input th:field="*{personalPhone}" id="personalPhone" />
+            <label for="personalPhone">Личный телефон
+                <input th:field="*{personalPhone}" id="personalPhone"
+                placeholder="Введите личный номер телефона" />
             </label>
 
             <label for="email">Email
-                <input th:field="*{email}" id="email" />
+                <input th:field="*{email}" id="email"
+                placeholder="Введите email" />
             </label>
 
             <label for="additionalInfo">Telegram id(без @)
-                <input th:field="*{additionalInfo}" id="additionalInfo" />
+                <input th:field="*{additionalInfo}" id="additionalInfo"
+                placeholder="Введите telegram id(без @)" />
             </label>
 
             <label for="statusNote">Дополнительная информация
-                <input th:field="*{statusNote}" id="statusNote" />
+                <input th:field="*{statusNote}" id="statusNote"
+                placeholder="Введите дополнительную информация при необходимости" />
             </label>
 
             <button type="submit">Добавить сотрудника</button>

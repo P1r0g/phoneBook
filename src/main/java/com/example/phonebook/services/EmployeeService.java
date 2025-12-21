@@ -17,7 +17,7 @@ public interface EmployeeService {
 
     List<ShowEmployeeDto> allEmployees();
 
-    Page<ShowEmployeeDto> allEmployeesPaginated(Pageable pageable);
+    List<ShowEmployeeDto> allInactives();
 
     List<ShowEmployeeDto> searchEmployees(String searchTerm);
 
@@ -38,4 +38,6 @@ public interface EmployeeService {
     boolean isCurrentUserAdmin();
 
     boolean isCurrentUserModerator();
+
+    void makeActive(Long id);
 }

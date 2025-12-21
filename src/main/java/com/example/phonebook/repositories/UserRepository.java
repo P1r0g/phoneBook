@@ -58,5 +58,8 @@ public interface UserRepository extends JpaRepository<UserAccount, Long> {
         "ORDER BY u.username ASC")
     List<UserAccount> searchUsersInDepartment( @Param("searchTerm") String searchTerm, @Param("departmentId") Long departmentId);
 
-
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM UserAccount u WHERE u.id = :id")
+    void deleteUser(@Param("id") Long id);
 }

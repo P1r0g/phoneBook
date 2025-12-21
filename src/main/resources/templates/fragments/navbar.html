@@ -11,20 +11,18 @@
             </li>
         </ul>
         <ul>
-            <li><a href="/employees/all">Сотрудники</a></li>
-            <li><a href="/info">Информация</a></li>
+            <li sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')"><a href="/employees/all">Сотрудники</a></li>
+            <li sec:authorize="hasRole('ADMIN')"><a href="/employees/inactive">Удалённые</a></li>
             <li sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
             <a href="/employees/add">Добавить сотрудника</a>
             </li>
            <li sec:authorize="hasRole('ADMIN')"><a href="/moderators/all">Пользователи</a></li>
            <li sec:authorize="hasRole('ADMIN')"><a href="/users/register">Добавить пользователя</a></li>
-            <li sec:authorize="hasRole('ADMIN')"><a href="/departments/all">Подразделения</a></li>
-            <li sec:authorize="hasRole('ADMIN')"><a href="/departments/add">Добавить подразделение</a></li>
+            <li sec:authorize="hasRole('ADMIN')"><a href="/departments/all">Отделы</a></li>
+            <li sec:authorize="hasRole('ADMIN')"><a href="/departments/add">Добавить отдел</a></li>
             <li sec:authorize="isAuthenticated()">
-                <a href="/users/profile" role="button" class="secondary outline">
-                    <th:block sec:authentication="name"></th:block>
-                </a>
-            </li>
+    <span sec:authentication="name"></span>
+</li>
             <li sec:authorize="isAuthenticated()">
                 <form th:method="post" th:action="@{/users/logout}" style="margin: 0;">
                     <button type="submit" class="contrast outline">Выйти</button>

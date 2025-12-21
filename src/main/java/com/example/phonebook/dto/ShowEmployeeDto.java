@@ -15,6 +15,7 @@ public class ShowEmployeeDto implements Serializable {
     private String additionalInfo;
     private String departmentShortName;
     private Long departmentId;
+    private boolean isActive;
 
     public Long getId() {
         return id;
@@ -111,5 +112,14 @@ public class ShowEmployeeDto implements Serializable {
     public void setDepartmentId(Long departmentId) {
         this.departmentId = departmentId;
     }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+    
     
 }

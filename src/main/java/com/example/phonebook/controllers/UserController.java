@@ -112,4 +112,10 @@ public class UserController {
         userService.updateUser(id, userDto);    
         return "redirect:/moderators/all";
     }
+
+    @PostMapping("/delete/{id}")
+    public String deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return "redirect:/moderators/all";
+    }
 }

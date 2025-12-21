@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -72,14 +73,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employees;
     }
 
-    @Override
-    public Page<ShowEmployeeDto> allEmployeesPaginated(Pageable pageable) {
-        log.debug("Получение сотрудников с пагинацией: страница {}, размер {}",
-                pageable.getPageNumber(), pageable.getPageSize());
-        return employeeRepository.findAll(pageable)
-                .map(employee -> mapper.map(employee, ShowEmployeeDto.class));
-    }
-    
     @Override
     public List<ShowEmployeeDto> findEmployeesByDepartment(Long departmentId) {
         log.debug("Получение сотрудников отдела: {}", departmentId);
@@ -183,5 +176,22 @@ public class EmployeeServiceImpl implements EmployeeService {
         return user != null && user.getRole() == UserRole.MODERATOR;
     }
 
+    @Override
+    public List<ShowEmployeeDto> allInactives() {
+        log.debug("Получение списка неактивных сотрудников");
+        List<ShowEmployeeDto> employees = employeeRepository.findAllInactiveOrdered().stream()
+                .map(employee -> mapper.map(employee, ShowEmployeeDto.class))
+                .collect(Collectors.toList());
+        log.debug("Найдено неактивных сотрудников: {}", employees.size());
+        return employees;
+    }
+
+    @Override
+    @Transactional
+    @Modifying
+    @CacheEvict(cacheNames = "employees", allEntries = true)
+    public void makeActive(Long id) {
+        employeeRepository.makeActive(id);
+    }
 
 }

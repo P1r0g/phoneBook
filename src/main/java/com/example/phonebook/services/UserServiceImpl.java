@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,5 +88,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id)
             .map(user -> mapper.map(user, UserAccount.class))
             .orElse(null);
+    }
+
+    @Override
+    @CacheEvict(cacheNames = "users", allEntries = true)
+    @Transactional
+    @Modifying
+    public void deleteUser(Long id) {
+        userRepository.deleteUser(id);
     }
 }

@@ -192,4 +192,19 @@ public class EmployeeController {
 
         return "redirect:/employees/all";
     }
+
+    @GetMapping("/inactive")
+    public String showInactiveEmployees(
+            Model model) {
+
+            model.addAttribute("allEmployees", employeeService.allInactives());
+
+        return "employee-inactive";
+    }
+
+    @PostMapping("/makeActive/{id}")
+    public String makeActive(@PathVariable Long id) {
+        employeeService.makeActive(id);
+        return "redirect:/employees/inactive";
+    }
 }
