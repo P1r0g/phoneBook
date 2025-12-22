@@ -60,6 +60,7 @@ public class AddEmployeeDto {
         this.officeNumber = officeNumber;
     }
     @NotEmpty(message = "Рабочий телефон не должен быть пустым")
+    @Size(max = 4, message = "Вписывайте тольько добавочный номер")
     public String getWorkPhone() {
         return workPhone;
     }

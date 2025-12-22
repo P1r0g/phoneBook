@@ -57,6 +57,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         Employee employee = mapper.map(employeeDto, Employee.class);
         employee.setDepartment(department);
+        employee.setActive(true);
 
         employeeRepository.saveAndFlush(employee);
         log.info("Сотрудник успешно добавлен: {} {} {}", employeeDto.getLastName(), employeeDto.getMiddleName(), employeeDto.getFirstName());

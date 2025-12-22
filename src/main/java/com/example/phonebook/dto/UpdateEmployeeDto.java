@@ -15,10 +15,11 @@ public class UpdateEmployeeDto {
     private Long departmentId;
 
     @NotEmpty(message = "Номер кабинета не может быть пустым")
-    @Size(min = 3, message = "Кабинет — минимум 3 символа")
+    @Size(min = 4, message = "Кабинет — минимум 4 символа")
     private String officeNumber;
 
     @NotEmpty(message = "Рабочий телефон обязателен")
+    @Size(max = 4, message = "Вписывайте только добавочный номер")
     private String workPhone;
 
     @NotEmpty(message = "Личный телефон обязателен")
