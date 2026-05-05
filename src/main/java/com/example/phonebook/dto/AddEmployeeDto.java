@@ -1,5 +1,7 @@
 package com.example.phonebook.dto;
 
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.validation.constraints.*;
 
 public class AddEmployeeDto {
@@ -33,7 +35,6 @@ public class AddEmployeeDto {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    @Size(min = 2, message = "Отчество должно содержать не менее 2 символов!")
     public String getMiddleName() {
         return middleName;
     }
@@ -51,7 +52,7 @@ public class AddEmployeeDto {
         this.departmentId = departmentId;
     }
     @NotEmpty(message = "Номер кабинета не может быть пустым")
-    @Size(min = 3, message = "Номер кабинета должен быть не менее 3 символов")
+    @Size(min = 4, message = "Номер кабинета должен быть не менее 4 символов")
     public String getOfficeNumber() {
         return officeNumber;
     }
@@ -85,17 +86,9 @@ public class AddEmployeeDto {
         this.email = email;
     }
 
-    public String getStatusNote() {
-        return statusNote;
-    }
-    public void setStatusNote(String statusNote) {
-        this.statusNote = statusNote;
-    }
+   public String getStatusNote() { return statusNote; }
+    public void setStatusNote(String statusNote) { this.statusNote = (statusNote != null && statusNote.trim().isEmpty()) ? null : statusNote; }
 
-    public String getAdditionalInfo() {
-        return additionalInfo;
-    }
-    public void setAdditionalInfo(String additionalInfo) {
-        this.additionalInfo = additionalInfo;
-    }
+    public String getAdditionalInfo() { return additionalInfo; }
+    public void setAdditionalInfo(String additionalInfo) { this.additionalInfo = (additionalInfo != null && additionalInfo.trim().isEmpty()) ? null : additionalInfo; }
 }

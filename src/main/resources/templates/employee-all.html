@@ -4,13 +4,10 @@
 <body>
 <div th:replace="fragments/navbar"></div>
 <main class="container">
-    <hgroup>
-        <h1>Все сотрудники</h1>
-    </hgroup>
 
     <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
         <div style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-            <span style="font-weight: bold; margin-right: 5px;">Отдел:</span>
+            <span style="font-weight: bold; margin-right: 5px;">Подразделение:</span>
             <a href="/employees/all"
                th:class="${selectedDepartment == null} ? 'department-btn active' : 'department-btn'"
                style="padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; font-size: 0.9rem;">
@@ -31,7 +28,7 @@
                    name="search"
                    th:value="${search}"
                    placeholder="Поиск сотрудников..."
-                   th:attr="placeholder=${selectedDepartment != null} ? 'Поиск в отделе' : 'Поиск сотрудников...'"
+                   th:attr="placeholder=${selectedDepartment != null} ? 'Поиск в подразделении' : 'Поиск сотрудников...'"
                    aria-label="Поиск"
                    id="searchInput"
                    autocomplete="off"
@@ -72,7 +69,7 @@
                        style="font-weight: bold; text-decoration: none;"></a>
                 </p>
                 <p>
-                    Кабинет:
+                    Аудитория:
                     <span th:text="${e.officeNumber}" style="font-weight: bold;"></span>
                 </p>
                 <p th:if="${e.additionalInfo}">
@@ -101,9 +98,9 @@
             </div>
         </div>
         <p th:if="${#lists.isEmpty(allEmployees)}" class="text-center">
-            <em> Введите запрос в поиск или выберите отдел.
+            <em> Введите запрос в поиск или выберите подразделение.
                 <span th:if="${selectedDepartment != null}">
-                    В выбранном отделе нет сотрудников.
+                    В выбранном подразделении нет сотрудников.
                 </span>
                 <span th:unless="${selectedDepartment != null}">
 
